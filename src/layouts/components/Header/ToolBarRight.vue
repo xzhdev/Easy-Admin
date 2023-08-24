@@ -1,45 +1,35 @@
 <template>
   <div class="tool-bar-ri">
     <div class="header-icon">
-      <AssemblySize id="assemblySize" />
+      <OrgOption />
       <Language id="language" />
-      <SearchMenu id="searchMenu" />
       <ThemeSetting id="themeSetting" />
-      <Message id="message" />
-      <Fullscreen id="fullscreen" />
+      <el-button size="small" type="primary" plain :icon="HomeFilled">返回平台首页</el-button>
+      <InfoDialog ref="infoRef"></InfoDialog>
     </div>
-    <span class="username">{{ username }}</span>
-    <Avatar />
   </div>
 </template>
 
-<script setup lang="ts">
-import { computed } from "vue";
-import { useUserStore } from "@/stores/modules/user";
-import AssemblySize from "./components/AssemblySize.vue";
+<script setup lang="ts" name="ToolBarRight">
+import InfoDialog from "./components/InfoDialog.vue";
+import { HomeFilled } from "@element-plus/icons-vue";
+import OrgOption from "./components/OrgOption.vue";
 import Language from "./components/Language.vue";
-import SearchMenu from "./components/SearchMenu.vue";
 import ThemeSetting from "./components/ThemeSetting.vue";
-import Message from "./components/Message.vue";
-import Fullscreen from "./components/Fullscreen.vue";
-import Avatar from "./components/Avatar.vue";
-
-const userStore = useUserStore();
-const username = computed(() => userStore.userInfo.name);
 </script>
 
 <style scoped lang="scss">
 .tool-bar-ri {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  padding-right: 25px;
+  white-space: nowrap;
   .header-icon {
     display: flex;
     align-items: center;
     & > * {
       margin-left: 21px;
-      color: var(--el-header-text-color);
     }
   }
   .username {

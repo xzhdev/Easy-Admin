@@ -32,7 +32,7 @@ export const useGlobalStore = defineStore({
     // 面包屑导航
     breadcrumb: true,
     // 面包屑导航图标
-    breadcrumbIcon: true,
+    breadcrumbIcon: false,
     // 标签页
     tabs: true,
     // 标签页图标

@@ -5,7 +5,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="ToolBarLeft">
 import { useGlobalStore } from "@/stores/modules/global";
 import CollapseIcon from "./components/CollapseIcon.vue";
 import Breadcrumb from "./components/Breadcrumb.vue";
@@ -15,6 +15,7 @@ const globalStore = useGlobalStore();
 <style scoped lang="scss">
 .tool-bar-lf {
   display: flex;
+  flex-shrink: 1;
   align-items: center;
   justify-content: center;
   overflow: hidden;

@@ -1,5 +1,5 @@
 import router from "@/routers/index";
-import { LOGIN_URL } from "@/config";
+// import { LOGIN_URL } from "@/config";
 import { RouteRecordRaw } from "vue-router";
 import { ElNotification } from "element-plus";
 import { useUserStore } from "@/stores/modules/user";
@@ -29,7 +29,7 @@ export const initDynamicRouter = async () => {
         duration: 3000
       });
       userStore.setToken("");
-      router.replace(LOGIN_URL);
+      router.replace("/404");
       return Promise.reject("No permission");
     }
 
@@ -48,7 +48,7 @@ export const initDynamicRouter = async () => {
   } catch (error) {
     // 当按钮 || 菜单请求出错时，重定向到登陆页
     userStore.setToken("");
-    router.replace(LOGIN_URL);
+    router.replace("/404");
     return Promise.reject(error);
   }
 };

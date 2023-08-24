@@ -9,6 +9,11 @@
   align-items: center;
   justify-content: space-between;
 }
+.flx-justify-evenly {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
 .flx-align-center {
   display: flex;
   align-items: center;
@@ -28,6 +33,14 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* 文字单行省略号 */
+.slec {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
 }
 
 /* 文字多行省略号 */

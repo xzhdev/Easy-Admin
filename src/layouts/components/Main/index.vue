@@ -2,7 +2,7 @@
   <Maximize v-if="maximize" />
   <Tabs v-if="tabs" />
   <el-main>
-    <router-view v-slot="{ Component, route }">
+    <router-view v-slot="{ Component, route }" :key="key">
       <transition appear name="fade-transform" mode="out-in">
         <keep-alive :include="keepAliveName">
           <component :is="Component" v-if="isRouterShow" :key="route.fullPath" />
@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onBeforeUnmount, provide, watch } from "vue";
+import { ref, onBeforeUnmount, provide, watch, computed } from "vue";
 import { storeToRefs } from "pinia";
 import { useDebounceFn } from "@vueuse/core";
 import { useGlobalStore } from "@/stores/modules/global";
@@ -24,6 +24,12 @@ import { useKeepAliveStore } from "@/stores/modules/keepAlive";
 import Maximize from "./components/Maximize.vue";
 import Tabs from "@/layouts/components/Tabs/index.vue";
 import Footer from "@/layouts/components/Footer/index.vue";
+import { useRoute } from "vue-router";
+
+const routes = useRoute();
+const key = computed(() => {
+  return routes.path + Math.random();
+});
 
 const globalStore = useGlobalStore();
 const { maximize, isCollapse, layout, tabs, footer } = storeToRefs(globalStore);

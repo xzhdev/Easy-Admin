@@ -17,11 +17,17 @@
 </template>
 
 <script setup lang="ts">
+import { useRoute } from "vue-router";
+import { getBrowserLang, localSet } from "@/utils";
 import { useI18n } from "vue-i18n";
-import { computed } from "vue";
+import { computed, onMounted } from "vue";
 import { useGlobalStore } from "@/stores/modules/global";
 import { LanguageType } from "@/stores/interface";
 
+onMounted(() => {
+  initLanguage(language.value || getBrowserLang());
+});
+const router = useRoute();
 const i18n = useI18n();
 const globalStore = useGlobalStore();
 const language = computed(() => globalStore.language);
@@ -34,5 +40,15 @@ const languageList = [
 const changeLanguage = (lang: string) => {
   i18n.locale.value = lang;
   globalStore.setGlobalState("language", lang as LanguageType);
+  initLanguage(lang);
+};
+
+const initLanguage = (language: string) => {
+  //调试中英文设置(cn|en)
+  i18n.locale.value = language;
+  globalStore.setGlobalState("language", language as LanguageType);
+  localSet("GlobalState.language", language);
+  const title = router.meta.title;
+  document.title = title + "-" + i18n.t("aside.title");
 };
 </script>
