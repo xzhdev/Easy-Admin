@@ -17,6 +17,7 @@ export interface GlobalState {
   asideInverted: boolean;
   headerInverted: boolean;
   isCollapse: boolean;
+  accordion: boolean;
   breadcrumb: boolean;
   breadcrumbIcon: boolean;
   tabs: boolean;
@@ -27,7 +28,11 @@ export interface GlobalState {
 /* UserState */
 export interface UserState {
   token: string;
-  userInfo: Record<string, string | number>;
+  userInfo: { name: string };
+  coreInfo: {
+    coreOrg: string;
+    coreDepartment: string;
+  };
 }
 
 /* tabsMenuProps */
@@ -37,6 +42,7 @@ export interface TabsMenuProps {
   path: string;
   name: string;
   close: boolean;
+  isKeepAlive: boolean;
 }
 
 /* TabsState */
@@ -56,4 +62,12 @@ export interface AuthState {
 /* KeepAliveState */
 export interface KeepAliveState {
   keepAliveName: string[];
+}
+
+/* PageState */
+
+export interface PageState {
+  tabTitles: {
+    [key: string]: string;
+  };
 }

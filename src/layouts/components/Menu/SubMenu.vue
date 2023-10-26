@@ -20,7 +20,7 @@
   </template>
 </template>
 
-<script setup lang="ts" name="SubMenu">
+<script setup lang="ts">
 import { useRouter } from "vue-router";
 
 defineProps<{ menuList: Menu.MenuOptions[] }>();
@@ -80,12 +80,6 @@ const handleClickMenu = (subItem: Menu.MenuOptions) => {
         right: 0;
       }
     }
-  }
-}
-.classic,
-.transverse {
-  #driver-highlighted-element-stage {
-    background-color: #606266 !important;
   }
 }
 </style>

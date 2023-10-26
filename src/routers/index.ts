@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory } from "vue-router";
+import { createRouter, createWebHashHistory, createWebHistory } from "vue-router";
 import { useUserStore } from "@/stores/modules/user";
 import { useAuthStore } from "@/stores/modules/auth";
 import { LOGIN_URL, ROUTER_WHITE_LIST } from "@/config";
@@ -6,6 +6,12 @@ import { initDynamicRouter } from "@/routers/modules/dynamicRouter";
 import { staticRouter, errorRouter } from "@/routers/modules/staticRouter";
 import NProgress from "@/config/nprogress";
 import i18n from "@/languages";
+const mode = import.meta.env.VITE_ROUTER_MODE;
+
+const routerMode = {
+  hash: () => createWebHashHistory(),
+  history: () => createWebHistory()
+};
 
 /**
  * @description 📚 路由参数配置简介
@@ -24,7 +30,7 @@ import i18n from "@/languages";
  * @param meta.isKeepAlive ==> 当前路由是否缓存
  * */
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: routerMode[mode](),
   routes: [...staticRouter, ...errorRouter],
   strict: false,
   scrollBehavior: () => ({ left: 0, top: 0 })
@@ -34,9 +40,7 @@ const router = createRouter({
  * @description 路由拦截 beforeEach
  * */
 router.beforeEach(async (to, from, next) => {
-  console.log(to, from);
   const userStore = useUserStore();
-  console.log(userStore.userInfo, userStore.token);
   const authStore = useAuthStore();
 
   // 1.NProgress 开始
@@ -46,7 +50,7 @@ router.beforeEach(async (to, from, next) => {
   const title = i18n.global.t("aside.title");
   document.title = to.meta.title ? `${to.meta.title} - ${title}` : title;
 
-  // 3.判断是访问登录，有 Token 就在当前页面，没有 Token 重置路由到登录页
+  // 3.判断是访问登陆页，有 Token 就在当前页面，没有 Token 重置路由到登陆页
   if (to.path.toLocaleLowerCase() === LOGIN_URL) {
     if (userStore.token) return next(from.fullPath);
     resetRouter();
@@ -79,7 +83,6 @@ export const resetRouter = () => {
   const authStore = useAuthStore();
   authStore.flatMenuListGet.forEach(route => {
     const { name } = route;
-    console.log(name);
     if (name && router.hasRoute(name)) router.removeRoute(name);
   });
 };

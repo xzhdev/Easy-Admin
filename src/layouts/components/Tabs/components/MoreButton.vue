@@ -17,7 +17,13 @@
         <el-dropdown-item divided @click="closeCurrentTab">
           <el-icon><Remove /></el-icon>{{ $t("tabs.closeCurrent") }}
         </el-dropdown-item>
-        <el-dropdown-item @click="closeOtherTab">
+        <el-dropdown-item @click="tabStore.closeTabsOnSide(route.fullPath, 'left')">
+          <el-icon><DArrowLeft /></el-icon>{{ $t("tabs.closeLeft") }}
+        </el-dropdown-item>
+        <el-dropdown-item @click="tabStore.closeTabsOnSide(route.fullPath, 'right')">
+          <el-icon><DArrowRight /></el-icon>{{ $t("tabs.closeRight") }}
+        </el-dropdown-item>
+        <el-dropdown-item divided @click="tabStore.closeMultipleTab(route.fullPath)">
           <el-icon><CircleClose /></el-icon>{{ $t("tabs.closeOther") }}
         </el-dropdown-item>
         <el-dropdown-item @click="closeAllTab">
@@ -46,10 +52,10 @@ const keepAliveStore = useKeepAliveStore();
 const refreshCurrentPage: Function = inject("refresh") as Function;
 const refresh = () => {
   setTimeout(() => {
-    keepAliveStore.removeKeepAliveName(route.name as string);
+    route.meta.isKeepAlive && keepAliveStore.removeKeepAliveName(route.name as string);
     refreshCurrentPage(false);
     nextTick(() => {
-      keepAliveStore.addKeepAliveName(route.name as string);
+      route.meta.isKeepAlive && keepAliveStore.addKeepAliveName(route.name as string);
       refreshCurrentPage(true);
     });
   }, 0);
@@ -64,19 +70,11 @@ const maximize = () => {
 const closeCurrentTab = () => {
   if (route.meta.isAffix) return;
   tabStore.removeTabs(route.fullPath);
-  keepAliveStore.removeKeepAliveName(route.name as string);
-};
-
-// Close Other
-const closeOtherTab = () => {
-  tabStore.closeMultipleTab(route.fullPath);
-  keepAliveStore.setKeepAliveName([route.name] as string[]);
 };
 
 // Close All
 const closeAllTab = () => {
   tabStore.closeMultipleTab();
-  keepAliveStore.setKeepAliveName();
   router.push(HOME_URL);
 };
 </script>

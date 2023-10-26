@@ -2,23 +2,22 @@
 <template>
   <el-container class="layout">
     <el-aside>
-      <div class="aside-box" :style="{ width: isCollapse ? '65px' : '220px' }">
+      <div class="aside-box" :style="{ width: isCollapse ? '65px' : '210px' }">
         <div class="logo flx-justify-evenly" style="flex-direction: column">
           <img class="logo-img" src="@/assets/images/logo.jpg" alt="logo" />
           <div v-show="!isCollapse" class="logo-text">{{ $t("aside.title") }}</div>
         </div>
         <el-scrollbar>
           <el-menu
+            :router="false"
             :default-active="activeMenu"
             :collapse="isCollapse"
-            :router="false"
-            :unique-opened="true"
+            :unique-opened="accordion"
             :collapse-transition="false"
           >
             <SubMenu :menu-list="menuList" />
           </el-menu>
         </el-scrollbar>
-        <AppMenu />
       </div>
     </el-aside>
     <el-container>
@@ -40,11 +39,13 @@ import Main from "@/layouts/components/Main/index.vue";
 import ToolBarLeft from "@/layouts/components/Header/ToolBarLeft.vue";
 import ToolBarRight from "@/layouts/components/Header/ToolBarRight.vue";
 import SubMenu from "@/layouts/components/Menu/SubMenu.vue";
-import AppMenu from "@/layouts/components/AppMenu/index.vue";
+
+const title = import.meta.env.VITE_GLOB_APP_TITLE;
 
 const route = useRoute();
 const authStore = useAuthStore();
 const globalStore = useGlobalStore();
+const accordion = computed(() => globalStore.accordion);
 const isCollapse = computed(() => globalStore.isCollapse);
 const menuList = computed(() => authStore.showMenuListGet);
 const activeMenu = computed(() => (route.meta.activeMenu ? route.meta.activeMenu : route.path) as string);

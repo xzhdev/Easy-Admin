@@ -1,13 +1,13 @@
 <template>
-  <div style="flex-shrink: 0">
-    <el-form :inline="true" :model="userInfo">
+  <div style="flex-shrink: 0; margin-right: -21px">
+    <el-form :inline="true" :model="coreInfo">
       <el-form-item label="操作机构:">
-        <el-select :disabled="true" v-model="value" class="m-2" placeholder="Select" size="small">
+        <el-select v-model="coreInfo.coreOrg" class="m-2" @change="handleChange" placeholder="Select" size="small">
           <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
       <el-form-item label="操作部门:">
-        <el-select :disabled="true" v-model="value" class="m-2" placeholder="Select" size="small">
+        <el-select v-model="coreInfo.coreDepartment" class="m-2" placeholder="Select" size="small">
           <el-option v-for="item in options2" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
@@ -20,9 +20,9 @@ import { ref } from "vue";
 import { useUserStore } from "@/stores/modules/user";
 
 const userStore = useUserStore();
-const userInfo = ref({
-  org: userStore.userInfo.coreOrg,
-  dep: userStore.userInfo.coreDepartment
+const coreInfo = ref({
+  coreOrg: userStore.coreInfo.coreOrg,
+  coreDepartment: userStore.coreInfo.coreDepartment
 });
 const value = ref("1");
 const options = [
@@ -61,6 +61,10 @@ const options2 = [
     label: "部门4"
   }
 ];
+
+const handleChange = () => {
+  userStore.setCoreInfo(coreInfo.value);
+};
 </script>
 
 <style scoped lang="scss">

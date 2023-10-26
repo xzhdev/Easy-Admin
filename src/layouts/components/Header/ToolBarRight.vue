@@ -1,9 +1,9 @@
 <template>
   <div class="tool-bar-ri">
     <div class="header-icon">
-      <OrgOption />
+      <OrgSelect />
       <Language id="language" />
-      <ThemeSetting id="themeSetting" />
+      <!-- <ThemeSetting id="themeSetting" /> -->
       <el-button size="small" type="primary" plain :icon="HomeFilled">返回平台首页</el-button>
       <InfoDialog ref="infoRef"></InfoDialog>
     </div>
@@ -13,9 +13,9 @@
 <script setup lang="ts" name="ToolBarRight">
 import InfoDialog from "./components/InfoDialog.vue";
 import { HomeFilled } from "@element-plus/icons-vue";
-import OrgOption from "./components/OrgOption.vue";
+import OrgSelect from "./components/OrgSelect.vue";
 import Language from "./components/Language.vue";
-import ThemeSetting from "./components/ThemeSetting.vue";
+// import ThemeSetting from "./components/ThemeSetting.vue";
 </script>
 
 <style scoped lang="scss">
@@ -29,7 +29,7 @@ import ThemeSetting from "./components/ThemeSetting.vue";
     display: flex;
     align-items: center;
     & > * {
-      margin-left: 21px;
+      margin-left: 10px;
     }
   }
   .username {

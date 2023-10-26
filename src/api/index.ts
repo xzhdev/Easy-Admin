@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, AxiosError, AxiosRequestConfig, InternalAxiosRequestConfig, AxiosResponse } from "axios";
-import { showFullScreenLoading, tryHideFullScreenLoading } from "@/config/serviceLoading";
-// import { LOGIN_URL } from "@/config";
+import { showFullScreenLoading, tryHideFullScreenLoading } from "@/components/Loading/fullScreen";
+import { LOGIN_URL } from "@/config";
 import { ElMessage } from "element-plus";
 import { ResultData } from "@/api/interface";
 import { ResultEnum } from "@/enums/httpEnum";
@@ -9,7 +9,7 @@ import { useUserStore } from "@/stores/modules/user";
 import router from "@/routers";
 
 export interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
-  noLoading?: boolean;
+  loading?: boolean;
 }
 
 const config = {
@@ -35,8 +35,9 @@ class RequestHttp {
     this.service.interceptors.request.use(
       (config: CustomAxiosRequestConfig) => {
         const userStore = useUserStore();
-        // 当前请求不需要显示 loading，在 api 服务中通过指定的第三个参数: { noLoading: true } 来控制
-        config.noLoading || showFullScreenLoading();
+        // 当前请求不需要显示 loading，在 api 服务中通过指定的第三个参数: { loading: false } 来控制
+        config.loading ?? (config.loading = true);
+        config.loading && showFullScreenLoading();
         if (config.headers && typeof config.headers.set === "function") {
           config.headers.set("x-access-token", userStore.token);
         }
@@ -59,7 +60,7 @@ class RequestHttp {
         // 登陆失效
         if (data.code == ResultEnum.OVERDUE) {
           userStore.setToken("");
-          router.replace("/500");
+          router.replace(LOGIN_URL);
           ElMessage.error(data.msg);
           return Promise.reject(data);
         }
