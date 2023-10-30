@@ -11,9 +11,10 @@
     :search-col="searchCol"
     :table-loading="true"
   />
-
   <!-- 表格主体 -->
   <div class="card table-main">
+    <slot name="titleHeader" />
+
     <!-- 表格头部 操作按钮 -->
     <div class="table-header">
       <div class="header-button-lf">

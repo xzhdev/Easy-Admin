@@ -29,7 +29,7 @@ import { Report } from "@/api/interface";
 const router = useRouter();
 
 // 表格配置项
-const columns = reactive<ColumnProps<Report.Funds.ResFunds>[]>([
+const columns = reactive<ColumnProps<Report.ResFunds>[]>([
   { type: "index", label: "序号", width: 80 },
   {
     prop: "moduleName",
@@ -105,7 +105,8 @@ onBeforeRouteLeave(to => {
   //处理跳转待提交/待审核/审核通过页面
   if (to.name === "fundsDetail") {
     to.meta.title = pageStore.getPageTabTitleName(to.name);
-    authStore.updateMetaTitle(to.path, to.meta.title);
+    // console.log(to.meta.title);
+    // authStore.updateMetaTitle(to.path, to.meta.title as string);
   }
 });
 

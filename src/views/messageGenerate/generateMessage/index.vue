@@ -78,7 +78,7 @@ onBeforeRouteLeave(to => {
   //处理跳转待提交/待审核/审核通过页面
   if (to.name === "fundsDetail") {
     to.meta.title = pageStore.getPageTabTitleName(to.name);
-    authStore.updateMetaTitle(to.path, to.meta.title);
+    authStore.updateMetaTitle(to.path, to.meta.title as string);
   }
 });
 

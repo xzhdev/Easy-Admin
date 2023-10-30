@@ -4,7 +4,7 @@
       ref="proTable"
       :border="false"
       :tool-button="false"
-      :request-api="getFundsList"
+      :request-api="getHistoryDataList"
       :init-param="initParam"
       :columns="columns"
       :table-loading="true"
@@ -16,7 +16,7 @@
 <script setup lang="tsx" name="historyData">
 import { reactive } from "vue";
 import { ColumnProps } from "@/components/ProTable/interface";
-import { getFundsList } from "@/api/modules/funds";
+import { getHistoryDataList } from "@/api/modules/historyData";
 import ProTable from "@/components/ProTable/index.vue";
 import { HistoryData } from "@/api/interface";
 import { useRouter } from "vue-router";
@@ -31,8 +31,7 @@ const columns = reactive<ColumnProps<HistoryData.ResHistoryData>[]>([
   { type: "index", label: "序号", width: 80 },
   {
     prop: "moduleName",
-    label: "所属模块名称",
-    minWidth: 220
+    label: "所属模块名称"
   },
   {
     prop: "formName",

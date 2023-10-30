@@ -4,7 +4,7 @@ import { getAuthButtonListApi, getAuthMenuListApi } from "@/api/modules/login";
 import { getFlatMenuList, getShowMenuList, getAllBreadcrumbList } from "@/utils";
 
 export const useAuthStore = defineStore({
-  id: "geeker-auth",
+  id: "swordgate-auth",
   state: (): AuthState => ({
     // 按钮权限列表
     authButtonList: {},
@@ -39,6 +39,27 @@ export const useAuthStore = defineStore({
     // Set RouteName
     async setRouteName(name: string) {
       this.routeName = name;
+    },
+    //Update Meta Title
+    updateMetaTitle(path: string, newTitle: string) {
+      this.findMatchPath(this.authMenuList, path, newTitle);
+    },
+    // 查找匹配的菜单
+    findMatchPath(data: Menu.MenuOptions[], path: string, newTitle: string) {
+      for (const item of data) {
+        if (item.path === path) {
+          // 找到匹配的数据，更新其meta的title值
+          item.meta.title = newTitle;
+          return true; // 表示找到并更新成功
+        }
+        if (item.children) {
+          // 递归查找子节点
+          if (this.findMatchPath(item.children, path, newTitle)) {
+            return true; // 如果在子节点中找到并更新成功，返回true
+          }
+        }
+      }
+      return false; // 没有找到匹配的数据
     }
   }
 });

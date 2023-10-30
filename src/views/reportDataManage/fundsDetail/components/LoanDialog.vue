@@ -1,33 +1,38 @@
 <template>
-  <div>
-    <el-dialog title="新增" v-model="dialogVisible" :destroy-on-close="true" width="950px" draggable @close="closeDialog">
-      <section :class="{ 'from-section': !collapsed }">
-        <component :is="'el-form'" v-bind="options.form" ref="proFormRef" :model="model" :rules="rules">
-          <template v-for="item in options.columns" :key="item.prop">
-            <component :is="'el-form-item'" v-bind="item.formItem">
-              <component :is="`el-${item.attrs.typeName}`" v-bind="item.attrs" v-model="model[item.formItem.prop]" />
-            </component>
-          </template>
-          <el-form-item>
-            <slot name="operation"></slot>
-          </el-form-item>
-        </component>
-      </section>
-      <section class="collapsed-section">
-        <el-button type="primary" @click="collapsed = !collapsed" size="small">
-          <el-icon class="el-icon--right">
-            <DArrowRight :class="collapsed ? 'd-arrow-top' : 'd-arrow-bottom'"></DArrowRight>
-          </el-icon>
-
-          {{ collapsed ? "展开明细" : "收起明细" }}
-        </el-button>
-      </section>
-      <section v-show="!collapsed">
+  <el-dialog
+    title="新增"
+    v-model="dialogVisible"
+    :destroy-on-close="true"
+    width="950px"
+    :lock-scroll="false"
+    draggable
+    @close="closeDialog"
+  >
+    <section :class="{ 'table-active': !collapsed }" class="form-section">
+      <component :is="'el-form'" v-bind="options.form" ref="proFormRef" :model="model" :rules="rules">
+        <template v-for="item in options.columns" :key="item.prop">
+          <component :is="'el-form-item'" v-bind="item.formItem">
+            <component :is="`el-${item.attrs.typeName}`" v-bind="item.attrs" v-model="model[item.formItem.prop]" />
+          </component>
+        </template>
+      </component>
+    </section>
+    <section class="collapsed-section">
+      <el-button type="primary" @click="collapsed = !collapsed" size="small">
+        <el-icon class="el-icon--right">
+          <DArrowRight :class="collapsed ? 'd-arrow-top' : 'd-arrow-bottom'"></DArrowRight>
+        </el-icon>
+        {{ collapsed ? "展开明细" : "收起明细" }}
+      </el-button>
+    </section>
+    <el-collapse-transition>
+      <div v-show="!collapsed">
         <ProTable
           ref="proTable"
           :border="false"
           :tool-button="false"
           :is-show-search="false"
+          :height="500"
           :request-api="getFundsList"
           :init-param="initParam"
           :columns="columns"
@@ -37,24 +42,24 @@
             <el-button>导出</el-button>
           </template>
         </ProTable>
-      </section>
-      <template #footer>
-        <span class="dialog-footer">
-          <el-button type="primary" @click="saveFrom"> 保存 </el-button>
-        </span>
-      </template>
-    </el-dialog>
-  </div>
+      </div>
+    </el-collapse-transition>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button type="primary" @click="saveFrom"> 保存 </el-button>
+      </span>
+    </template>
+  </el-dialog>
 </template>
 
 <script setup lang="tsx">
-import { computed, reactive, ref } from "vue";
+import { reactive, ref } from "vue";
 import { Report } from "@/api/interface";
 import { getFundsList } from "@/api/modules/funds";
 import { ColumnProps } from "@/components/ProTable/interface";
 import ProTable from "@/components/ProTable/index.vue";
 import { DArrowRight } from "@element-plus/icons-vue";
-import type { FormRules, FormInstance } from "element-plus";
+import type { FormInstance } from "element-plus";
 
 //控制会话框打开/关闭
 const dialogVisible = ref(false);
@@ -63,7 +68,7 @@ const dialogVisible = ref(false);
 interface LoanProps {
   title: string;
   isView: boolean;
-  row: Partial<Report.Funds.ResDetailFunds>;
+  row: Partial<Report.ResDetailFunds>;
   api?: (params: any) => Promise<any>;
   getTableList?: () => void;
 }
@@ -332,7 +337,7 @@ const rules = reactive({
 /**
  * 表格配置项
  */
-const columns = reactive<ColumnProps<Report.Funds.ResFunds>[]>([
+const columns = reactive<ColumnProps<Report.ResFunds>[]>([
   { type: "index", label: "序号", width: 80 },
   {
     prop: "moduleName",
@@ -391,7 +396,7 @@ const columns = reactive<ColumnProps<Report.Funds.ResFunds>[]>([
     prop: "operation",
     label: "操作",
     fixed: "right",
-    width: 300,
+    width: 200,
     render: () => {
       return (
         <>
@@ -450,20 +455,30 @@ defineExpose({
     width: calc(100% / 3 - 32px);
   }
 }
-.from-section {
-  height: 200px;
+.form-section {
+  width: 100%;
+  max-height: 800px;
   overflow: hidden auto;
+
+  // overflow: hidden overlay;
+  transition: all 1s ease-in-out;
+  &.table-active {
+    max-height: 300px;
+  }
 }
 .collapsed-section {
   margin: 10px 0;
   text-align: center;
 }
 .d-arrow-top {
-  transition: all 0.3s;
+  transition: all 0.1s;
   transform: rotate(-90deg);
 }
 .d-arrow-bottom {
-  transition: all 0.3s;
+  transition: all 0.1s;
   transform: rotate(90deg);
+}
+.el-overlay-dialog::-webkit-scrollbar {
+  // width: 0;
 }
 </style>

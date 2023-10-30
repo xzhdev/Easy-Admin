@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onBeforeUnmount, provide, watch } from "vue";
+import { ref, onBeforeUnmount, provide, watch, nextTick } from "vue";
 import { storeToRefs } from "pinia";
 import { useDebounceFn } from "@vueuse/core";
 import { useGlobalStore } from "@/stores/modules/global";
@@ -24,10 +24,13 @@ import { useKeepAliveStore } from "@/stores/modules/keepAlive";
 import Maximize from "./components/Maximize.vue";
 import Tabs from "@/layouts/components/Tabs/index.vue";
 import Footer from "@/layouts/components/Footer/index.vue";
+import mittBus from "@/utils/mittBus";
+import { useRoute } from "vue-router";
 
 const globalStore = useGlobalStore();
 const { maximize, isCollapse, layout, tabs, footer } = storeToRefs(globalStore);
 
+const useroute = useRoute();
 const keepAliveStore = useKeepAliveStore();
 const { keepAliveName } = storeToRefs(keepAliveStore);
 
@@ -35,6 +38,19 @@ const { keepAliveName } = storeToRefs(keepAliveStore);
 const isRouterShow = ref(true);
 const refreshCurrentPage = (val: boolean) => (isRouterShow.value = val);
 provide("refresh", refreshCurrentPage);
+
+const resetkeepAlive = () => {
+  setTimeout(() => {
+    useroute.meta.isKeepAlive && keepAliveStore.removeKeepAliveName(useroute.name as string);
+    refreshCurrentPage(false);
+    nextTick(() => {
+      useroute.meta.isKeepAlive && keepAliveStore.addKeepAliveName(useroute.name as string);
+      refreshCurrentPage(true);
+    });
+  }, 0);
+  keepAliveStore.setKeepAliveName([]);
+};
+mittBus.on("resetkeepAlive", resetkeepAlive);
 
 // 监听当前页面是否最大化，动态添加 class
 watch(

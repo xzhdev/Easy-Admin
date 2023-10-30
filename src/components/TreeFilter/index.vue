@@ -7,6 +7,7 @@
     <el-scrollbar :style="{ height: title ? `calc(100% - 95px)` : `calc(100% - 56px)` }">
       <el-tree
         ref="treeRef"
+        class="tree"
         default-expand-all
         :node-key="id"
         :data="multiple ? treeData : treeAllData"
@@ -45,17 +46,19 @@ interface TreeFilterProps {
   title?: string; // treeFilter 标题 ==> 非必传
   id?: string; // 选择的id ==> 非必传，默认为 “id”
   label?: string; // 显示的label ==> 非必传，默认为 “label”
+  children?: string; // 显示的children ==> 非必传，默认为 "children"
   multiple?: boolean; // 是否为多选 ==> 非必传，默认为 false
   defaultValue?: any; // 默认选中的值 ==> 非必传
 }
 const props = withDefaults(defineProps<TreeFilterProps>(), {
   id: "id",
   label: "label",
+  children: "children",
   multiple: false
 });
 
 const defaultProps = {
-  children: "children",
+  children: props.children,
   label: props.label
 };
 

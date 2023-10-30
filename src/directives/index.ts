@@ -6,6 +6,7 @@ import draggable from "./modules/draggable";
 import debounce from "./modules/debounce";
 import throttle from "./modules/throttle";
 import longpress from "./modules/longpress";
+import stretch from "./modules/stretch";
 
 const directivesList: { [key: string]: Directive } = {
   auth,
@@ -14,7 +15,8 @@ const directivesList: { [key: string]: Directive } = {
   draggable,
   debounce,
   throttle,
-  longpress
+  longpress,
+  stretch
 };
 
 const directives = {

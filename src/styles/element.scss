@@ -29,7 +29,7 @@
 /* custom card */
 .card {
   box-sizing: border-box;
-  padding: 20px;
+  padding: 18px;
   overflow-x: hidden;
   background-color: var(--el-bg-color);
   border: 1px solid var(--el-border-color-light);
@@ -256,4 +256,58 @@
       font-size: 17px;
     }
   }
+}
+
+/* 树形结构节点添加连线 css */
+.tree .el-tree-node {
+  position: relative;
+
+  // padding-left: 16px;
+}
+.tree .el-tree-node__children {
+  padding-left: 13px;
+}
+.tree .el-tree-node :last-child::before {
+  height: 38px;
+}
+.tree .el-tree > .el-tree-node::before {
+  border-left: none;
+}
+.tree-container .el-tree > .el-tree-node::after {
+  border-top: none;
+}
+.tree .el-tree-node__expand-icon.is-leaf {
+  display: none;
+}
+.tree .el-tree-node__children .el-tree-node {
+  &::before {
+    position: absolute;
+    inset: -16px auto 0 -1px; // padding-left: 13px; 减去 -1px ，保证 hover 样式 left 距离正常
+    width: 1px;
+    height: 100%;
+    content: "";
+    border-width: 1px;
+    border-left: 1px solid #dddddd;
+  }
+  &::after {
+    position: absolute;
+    inset: 16px auto auto 0;
+    width: 15px;
+    height: 20px;
+    content: "";
+    border-width: 1px;
+    border-top: 1px solid #dddddd;
+  }
+  .el-tree-node__content {
+    padding-left: 25px;
+  }
+}
+.tree .custom-tree-node {
+  padding-left: 10px;
+}
+.el-zoom-in-bottom-enter-active {
+  transition: all 0.3s ease-out;
+}
+.el-zoom-in-bottom-leave-active {
+  transition: all 0.8s ease-in-out;
 }

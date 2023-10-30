@@ -16,8 +16,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { useUserStore } from "@/stores/modules/user";
+import mittBus from "@/utils/mittBus";
 
 const userStore = useUserStore();
 const coreInfo = ref({
@@ -62,6 +63,15 @@ const options2 = [
   }
 ];
 
+watch(
+  () => coreInfo.value,
+  () => {
+    mittBus.emit("resetkeepAlive");
+  },
+  {
+    deep: true
+  }
+);
 const handleChange = () => {
   userStore.setCoreInfo(coreInfo.value);
 };

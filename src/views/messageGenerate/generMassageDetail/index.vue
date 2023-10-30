@@ -24,7 +24,7 @@ import { ColumnProps } from "@/components/ProTable/interface";
 import { Report } from "@/api/interface";
 
 // 表格配置项
-const columns = reactive<ColumnProps<Report.Funds.ResFunds>[]>([
+const columns = reactive<ColumnProps<Report.ResFunds>[]>([
   { type: "index", label: "序号", width: 80 },
   {
     prop: "dataDate",

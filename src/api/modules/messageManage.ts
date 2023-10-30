@@ -1,4 +1,4 @@
-import { ResPage, MessageManage } from "@/api/interface/index";
+import { MessageManage } from "@/api/interface/index";
 import { PORT1 } from "@/api/config/servicePort";
 import http from "@/api/index";
 

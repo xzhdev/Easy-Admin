@@ -6,17 +6,25 @@ import { TabsState, TabsMenuProps } from "@/stores/interface";
 import piniaPersistConfig from "@/stores/helper/persist";
 
 const keepAliveStore = useKeepAliveStore();
+//完整路径去除传参 a/b?a=1 =>  a/b
+const getPath = (fullPath: string) => {
+  return fullPath.split("?")[0];
+};
 
 export const useTabsStore = defineStore({
-  id: "geeker-tabs",
+  id: "swordgate-tabs",
   state: (): TabsState => ({
     tabsMenuList: []
   }),
   actions: {
     // Add Tabs
     async addTabs(tabItem: TabsMenuProps) {
-      if (this.tabsMenuList.every(item => item.path !== tabItem.path)) {
+      console.log("tabItem", tabItem);
+      if (this.tabsMenuList.every(item => getPath(item.path) !== getPath(tabItem.path))) {
         this.tabsMenuList.push(tabItem);
+      } else {
+        const index = this.tabsMenuList.findIndex(item => getPath(item.path) === getPath(tabItem.path));
+        if (index > -1) this.tabsMenuList.splice(index, 1, tabItem);
       }
       // add keepalive
       if (!keepAliveStore.keepAliveName.includes(tabItem.name) && tabItem.isKeepAlive) {
@@ -72,5 +80,5 @@ export const useTabsStore = defineStore({
       });
     }
   },
-  persist: piniaPersistConfig("geeker-tabs")
+  persist: piniaPersistConfig("swordgate-tabs")
 });

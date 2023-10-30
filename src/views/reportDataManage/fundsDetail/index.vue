@@ -74,21 +74,26 @@ let types = {
   "1": "待审核",
   "2": "审核通过"
 };
-
+const title = ref("");
 onActivated(() => {
-  //设置tabs title
-  let title;
-  console.log(route.meta.title);
-  if (route.query.state && typeof route.query.state === "string") {
-    type.value = route.query.state;
-    title = types[route.query.state as keyof typeof types];
-    // route.meta.title = title;
-    // tabStore.setTabsTitle(title);
-  }
+  initInfo();
 });
 
+const initInfo = () => {
+  //设置tabs title
+  console.log("title", route.meta.title);
+  if (route.query.state && typeof route.query.state === "string") {
+    type.value = route.query.state;
+    title.value = types[route.query.state as keyof typeof types];
+    route.meta.title = title;
+    tabStore.setTabsTitle(title.value);
+  }
+};
+initInfo();
+
 // 表格配置项
-const columns = reactive<ColumnProps<Report.Funds.ResFunds>[]>([
+const columns = reactive<ColumnProps<Report.ResFunds>[]>([
+  { type: "selection", width: 80 },
   { type: "index", label: "序号", width: 80, fixed: "left" },
   {
     prop: "collectionDate",
@@ -266,7 +271,7 @@ const proTable = ref<ProTableInstance>();
 
 // 打开 loanDialog(新增、查看、编辑)
 const loanDialog = ref<InstanceType<typeof LoanDialog> | null>(null);
-const openLoanDialog = async (title: string, row: Partial<Report.Funds.ResDetailFunds> = {}) => {
+const openLoanDialog = async (title: string, row: Partial<Report.ResDetailFunds> = {}) => {
   const params = {
     title,
     isView: title === "新增",
