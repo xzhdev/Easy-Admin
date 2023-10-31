@@ -1,14 +1,15 @@
 <template>
   <el-dialog
     title="新增"
+    ref="dialogRef"
     v-model="dialogVisible"
     :destroy-on-close="true"
+    class="dialog-center"
     width="950px"
-    :lock-scroll="false"
-    draggable
     @close="closeDialog"
   >
-    <section :class="{ 'table-active': !collapsed }" class="form-section">
+    <!-- :class="{ 'table-active': !collapsed }" -->
+    <section class="form-section">
       <component :is="'el-form'" v-bind="options.form" ref="proFormRef" :model="model" :rules="rules">
         <template v-for="item in options.columns" :key="item.prop">
           <component :is="'el-form-item'" v-bind="item.formItem">
@@ -18,7 +19,7 @@
       </component>
     </section>
     <section class="collapsed-section">
-      <el-button type="primary" @click="collapsed = !collapsed" size="small">
+      <el-button type="primary" @click="collapsedChange" size="small">
         <el-icon class="el-icon--right">
           <DArrowRight :class="collapsed ? 'd-arrow-top' : 'd-arrow-bottom'"></DArrowRight>
         </el-icon>
@@ -26,7 +27,7 @@
       </el-button>
     </section>
     <el-collapse-transition>
-      <div v-show="!collapsed">
+      <div v-show="!collapsed" class="tableDetail">
         <ProTable
           ref="proTable"
           :border="false"
@@ -53,7 +54,7 @@
 </template>
 
 <script setup lang="tsx">
-import { reactive, ref } from "vue";
+import { nextTick, reactive, ref } from "vue";
 import { Report } from "@/api/interface";
 import { getFundsList } from "@/api/modules/funds";
 import { ColumnProps } from "@/components/ProTable/interface";
@@ -430,6 +431,21 @@ const saveFrom = async () => {
       });
     }
   });
+};
+
+const collapsedChange = async () => {
+  collapsed.value = !collapsed.value;
+  //滚动到表格明细区
+  if (!collapsed.value) {
+    await nextTick();
+    const tableDetail = document.querySelector(".tableDetail");
+    // setTimeout(() => {
+    tableDetail?.scrollIntoView({
+      block: "nearest",
+      behavior: "smooth"
+    });
+    // }, 500);
+  }
 };
 
 //初始化请求数据

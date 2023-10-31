@@ -22,7 +22,8 @@
     "lint:lint-staged": "lint-staged",
     "prepare": "husky install",
     "release": "standard-version",
-    "commit": "git add -A && czg && git push"
+    "commit": "git add -A && czg && git push",
+    "preinstall": "node ./scripts/preinstall.js"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.1.0",
