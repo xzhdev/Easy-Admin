@@ -19,3 +19,8 @@ export const addLoan = (params?: any) => {
 export const editLoan = (params?: any) => {
   return http.get(PORT1 + `/funds/list`, params);
 };
+
+//查看校验结果列表
+export const getCheckResult = (params?: any) => {
+  return http.get<ResPage<Report.ResCheckResult>>(PORT1 + `/verResult/list`, params, { loading: false });
+};

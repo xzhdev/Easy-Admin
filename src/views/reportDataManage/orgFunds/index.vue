@@ -3,7 +3,7 @@
     <ProTable
       ref="proTable"
       :border="false"
-      :tool-button="true"
+      :tool-button="false"
       :request-api="getFundsList"
       :init-param="initParam"
       :columns="columns"
@@ -21,7 +21,7 @@ import { reactive } from "vue";
 import { useAuthStore } from "@/stores/modules/auth";
 import { usePageStore } from "@/stores/modules/page";
 import { onBeforeRouteLeave, useRouter } from "vue-router";
-import { getFundsList } from "@/api/modules/funds";
+import { getFundsList } from "@/api/modules/report";
 import ProTable from "@/components/ProTable/index.vue";
 import { ColumnProps } from "@/components/ProTable/interface";
 import { Report } from "@/api/interface";

@@ -15,7 +15,7 @@
         <div v-if="type === '0'">
           <el-button @click="openLoanDialog('新增')">新增</el-button>
           <el-button>校验</el-button>
-          <el-button>校验结果查看</el-button>
+          <el-button @click="openVerResultDialog">校验结果查看</el-button>
           <el-button>提交</el-button>
           <el-button>申请删除</el-button>
           <el-button>强制提交</el-button>
@@ -41,6 +41,7 @@
       </template>
     </ProTable>
     <LoanDialog v-if="loanVisible" v-model:loanVisible="loanVisible" ref="loanDialog"></LoanDialog>
+    <VerResultDialog ref="verResultDialog"></VerResultDialog>
   </div>
 </template>
 
@@ -48,12 +49,13 @@
 import { nextTick, onActivated, reactive, ref } from "vue";
 import { useRoute, onBeforeRouteUpdate } from "vue-router";
 import { useTabsStore } from "@/stores/modules/tabs";
-import { getFundsList } from "@/api/modules/funds";
+import { getFundsList } from "@/api/modules/report";
 import ProTable from "@/components/ProTable/index.vue";
 import { ColumnProps, ProTableInstance } from "@/components/ProTable/interface";
 import { Report } from "@/api/interface";
 import LoanDialog from "./components/LoanDialog.vue";
-import { addLoan, editLoan } from "@/api/modules/funds";
+import VerResultDialog from "./components/VerResultDialog.vue";
+import { addLoan, editLoan } from "@/api/modules/report";
 // import { Back } from "@element-plus/icons-vue";
 
 const tabStore = useTabsStore();
@@ -117,7 +119,8 @@ const columns = reactive<ColumnProps<Report.ResFunds>[]>([
     prop: "dataRollback",
     label: "数据打回",
     fixed: "left",
-    width: 110
+    width: 110,
+    isShow: type.value === "0"
   },
   {
     prop: "validationStatus",
@@ -284,8 +287,19 @@ const openLoanDialog = async (title: string, row: Partial<Report.ResDetailFunds>
   loanDialog.value?.acceptParams(params);
 };
 
-//销毁loanDialog
+// 销毁loanDialog
 const loanVisible = ref(false);
+
+//打开 openVerResult（校验结果查看）
+const verResultDialog = ref<InstanceType<typeof VerResultDialog> | null>(null);
+const openVerResultDialog = async (row: Partial<Report.ResDetailFunds>) => {
+  const params = {
+    row: { ...row }
+  };
+  await nextTick();
+  verResultDialog.value?.acceptParams(params);
+};
 </script>
 
 <style scoped></style>
+@/api/modules/report@/api/modules/report

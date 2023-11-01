@@ -56,7 +56,7 @@
 <script setup lang="tsx">
 import { nextTick, reactive, ref } from "vue";
 import { Report } from "@/api/interface";
-import { getFundsList } from "@/api/modules/funds";
+import { getFundsList } from "@/api/modules/report";
 import { ColumnProps } from "@/components/ProTable/interface";
 import ProTable from "@/components/ProTable/index.vue";
 import { DArrowRight } from "@element-plus/icons-vue";
@@ -436,16 +436,15 @@ const saveFrom = async () => {
 const collapsedChange = async () => {
   collapsed.value = !collapsed.value;
   //滚动到表格明细区
-  if (!collapsed.value) {
-    await nextTick();
-    const tableDetail = document.querySelector(".tableDetail");
-    // setTimeout(() => {
+  if (collapsed.value) return;
+  await nextTick();
+  const tableDetail = document.querySelector(".tableDetail");
+  setTimeout(() => {
     tableDetail?.scrollIntoView({
       block: "nearest",
       behavior: "smooth"
     });
-    // }, 500);
-  }
+  }, 500);
 };
 
 //初始化请求数据
@@ -498,3 +497,4 @@ defineExpose({
   // width: 0;
 }
 </style>
+@/api/modules/report

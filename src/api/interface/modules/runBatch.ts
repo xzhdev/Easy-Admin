@@ -20,7 +20,6 @@ export interface ResTaskList {
  * 日志列表响应
  */
 export interface ResLogList {
-  //报表名称
   //任务名称
   taskName: string;
   //开始时间

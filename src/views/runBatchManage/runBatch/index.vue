@@ -5,15 +5,15 @@
       <div class="header-button-ri">
         <el-form :inline="true">
           <el-form-item label="报表名称：">
-            <el-select v-model="value" class="m-2" placeholder="请选择">
+            <el-select v-model="_searchParam.reportName" class="m-2" placeholder="请选择">
               <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
           </el-form-item>
           <el-form-item label="任务名称：">
-            <el-input v-model="value" placeholder="请输入" />
+            <el-input v-model="_searchParam.taskName" placeholder="请输入" />
           </el-form-item>
-          <el-button type="primary"> 搜索 </el-button>
-          <el-button> 重置 </el-button>
+          <el-button type="primary" @click="search"> 搜索 </el-button>
+          <el-button @click="reset"> 重置 </el-button>
         </el-form>
       </div>
     </div>
@@ -27,16 +27,18 @@
             ref="proTableTask"
             :border="false"
             :tool-button="false"
-            :data="[]"
+            :request-api="getTaskRunBatch"
             :columns="columns_task"
             :table-loading="true"
           >
           </ProTable>
         </div>
-        <div class="stretch" @mousedown="dragControllerDiv($event, taskCard)"></div>
+        <div class="stretch" @mousedown="dragControllerDiv($event, taskCard)">
+          <More />
+        </div>
       </el-card>
       <el-card class="box-card" ref="logCard" name="logCard" style="height: 500px">
-        <div class="stretch" @mousedown="dragControllerDiv($event, logCard)" style="top: -61px"></div>
+        <div class="stretch" @mousedown="dragControllerDiv($event, logCard)" style="top: -61px"><More /></div>
         <template #header>
           <div class="card-header"><span class="card-title"></span> <span class="card-text">日志</span></div>
         </template>
@@ -45,7 +47,7 @@
             ref="proTableLog"
             :border="false"
             :tool-button="false"
-            :data="[]"
+            :request-api="getLogRunBatch"
             :columns="columns_log"
             :table-loading="true"
           >
@@ -62,17 +64,19 @@ import ProTable from "@/components/ProTable/index.vue";
 import { ColumnProps } from "@/components/ProTable/interface";
 import { RunBatch } from "@/api/interface";
 import RunBatchInfo from "./components/runBatchInfo.vue";
-import { addTaskRunBatch, editTaskRunBatch } from "@/api/modules/runBatch";
-import { computed, nextTick, onMounted, reactive, ref } from "vue";
+import { addTaskRunBatch, editTaskRunBatch, getTaskRunBatch, getLogRunBatch } from "@/api/modules/runBatch";
+import { computed, nextTick, reactive, ref } from "vue";
 import { ElCard } from "element-plus";
+import { More } from "@element-plus/icons-vue";
 
-const top = ref(100);
-const bottom = ref(150);
-const stretchValue = computed(() => {
-  return {
-    top: top.value,
-    bottom: bottom.value
-  };
+interface SearchForm {
+  reportName: string;
+  taskName: string;
+}
+
+const _searchParam = ref<SearchForm>({
+  reportName: "",
+  taskName: ""
 });
 
 //控制新增/编辑弹窗是否显示
@@ -193,6 +197,7 @@ const logCard = ref();
 const offsetY = ref(0);
 let animationFrameId: number | null = null;
 
+//拖动控制器
 const dragControllerDiv = async (event: MouseEvent, card: InstanceType<typeof ElCard>) => {
   if (!card) return;
   //获取card 名称
@@ -203,6 +208,13 @@ const dragControllerDiv = async (event: MouseEvent, card: InstanceType<typeof El
   const height = Number(cardDom.style.height.replace("px", ""));
   //去除height 的px
   offsetY.value = event.clientY;
+  // 设置样式
+  // 获取或创建一个样式表
+  const styleSheet = document.styleSheets[0] || document.head.appendChild(document.createElement("style")).sheet;
+  // 定义要添加的样式规则
+  const rule = "* { cursor: row-resize;pointer-events: none !important; user-select: none !important;}";
+  // 添加样式规则到样式表
+  const ruleIndex = styleSheet.insertRule(rule, styleSheet.cssRules.length);
   // 添加mousemove事件监听器到document
   document.onmousemove = (event: MouseEvent) => {
     event.preventDefault();
@@ -225,7 +237,24 @@ const dragControllerDiv = async (event: MouseEvent, card: InstanceType<typeof El
     document.onmousemove = null;
     document.onmouseup = null;
     animationFrameId = null;
+    //移除样式
+    styleSheet.deleteRule(ruleIndex);
   };
+};
+
+// 查询
+const search = () => {
+  proTableTask.value!.searchParam = _searchParam.value;
+  proTableTask.value?.search();
+};
+// 重置
+const reset = () => {
+  _searchParam.value = {
+    reportName: "",
+    taskName: ""
+  };
+  proTableTask.value?.reset();
+  proTableLog.value?.reset();
 };
 </script>
 
@@ -284,7 +313,12 @@ const dragControllerDiv = async (event: MouseEvent, card: InstanceType<typeof El
     display: flex;
     flex-direction: column;
     .el-card__body {
+      display: flex;
       flex: 1;
+      flex-direction: column;
+
+      // 上下内边距20px card__header 40.5px
+      height: calc(100% - 40px - 40.5px);
     }
   }
   :deep(.el-card__header) {
@@ -307,17 +341,26 @@ const dragControllerDiv = async (event: MouseEvent, card: InstanceType<typeof El
   position: relative;
   top: 15px;
   left: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 50px;
   height: 5px;
-  font-size: 32px;
+  font-size: 14px;
+  line-height: 0;
   color: white;
-  cursor: row-resize;
   background-color: #d6d6d6;
   background-position: center;
   background-size: cover;
   border-radius: 5px;
   &:hover {
-    color: #444444;
+    cursor: row-resize;
+  }
+  svg {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    fill: currentcolor;
   }
 }
 </style>

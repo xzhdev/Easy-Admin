@@ -248,13 +248,24 @@
 
 /* el-dialog */
 .el-dialog {
+  --el-dialog-padding-primary: 10px;
+
+  border-radius: 10px;
   .el-dialog__header {
     padding: 15px 20px;
     margin: 0;
+    background-color: rgb(234 241 252);
     border-bottom: 1px solid var(--el-border-color-lighter);
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
     .el-dialog__title {
       font-size: 17px;
     }
+  }
+  .el-dialog__footer {
+    background-color: rgb(234 241 252);
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
   }
 }
 

@@ -6,24 +6,24 @@ import http from "@/api/index";
  * @name 跑批任务列表
  */
 export const getTaskRunBatch = (params?: any) => {
-  return http.get<ResPage<RunBatch.ResTaskList>>(PORT1 + `/runbatch/list`, params, { loading: false });
+  return http.get<ResPage<RunBatch.ResTaskList>>(PORT1 + `/runBatch/task/list`, params, { loading: false });
 };
 /**
  * @name 跑批日志列表
  */
 export const getLogRunBatch = (params?: any) => {
-  return http.get<ResPage<RunBatch.ResLogList>>(PORT1 + `/runbatch/log`, params, { loading: false });
+  return http.get<ResPage<RunBatch.ResLogList>>(PORT1 + `/runBatch/log/list`, params, { loading: false });
 };
 /**
  * @name 新增跑批任务
  */
 export const addTaskRunBatch = (params?: any) => {
-  return http.get(PORT1 + `/runbatch/add`, params);
+  return http.get(PORT1 + `/runBatch/add`, params);
 };
 
 /**
  * @name 编辑跑批任务
  */
 export const editTaskRunBatch = (params?: any) => {
-  return http.get(PORT1 + `/runbatch/edit`, params);
+  return http.get(PORT1 + `/runBatch/edit`, params);
 };

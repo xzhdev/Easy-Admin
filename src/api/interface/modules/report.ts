@@ -35,3 +35,22 @@ export interface ResDetailFunds {
   thirdPartyDiscountRate: string; //第三方贴息利率
   [property: string]: any;
 }
+
+/**
+ * 待提交 - 校验结果查看
+ */
+export interface ResCheckResult {
+  //表名
+  tableName: string;
+  //字段编号
+  fieldCode: string;
+  //外债编号
+  foreignCurrencyCode: string;
+  //出错编号
+  errorCode: string;
+  //错误信息
+  errorMessage: string;
+  //数据日期
+  dataDate: string;
+  [property: string]: any;
+}
