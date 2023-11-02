@@ -97,6 +97,8 @@ let offsetY = 0;
 let lastMoveIndex = 0; //  拖拽计数
 let curMoveIndex = 0; //  历史计数
 
+let animationFrameId: number | null = null;
+
 //点击悬浮球外关闭菜单
 const floatHead = ref();
 const handleMenuClose = (event: MouseEvent) => {
@@ -115,12 +117,13 @@ onMounted(() => {
   onUnmounted(() => {
     document.removeEventListener("click", handleMenuClose);
     window.removeEventListener("resize", onWindowResize);
+    animationFrameId = null;
   });
 
 const onWindowResize = () => {
   const intialStyle = utils.setupInitStyle("bottom left", props.dimension);
   menuActive.value = false;
-  requestAnimationFrame(() => {
+  animationFrameId = requestAnimationFrame(() => {
     floatingBall.value.style.left = intialStyle.left;
     floatingBall.value.style.top = intialStyle.top;
   });
@@ -159,7 +162,7 @@ const handleDragMove = (event: MouseEvent) => {
       menuActive.value = false;
       const x = event.clientX - offsetX;
       const y = event.clientY - offsetY;
-      requestAnimationFrame(() => {
+      animationFrameId = requestAnimationFrame(() => {
         floatingBall.value.style.left = `${x > 15 ? x : 15}px`;
         floatingBall.value.style.top = `${
           y > 0 && y < window.innerHeight - props.dimension ? y : y < 0 ? 0 : y - props.dimension
@@ -193,14 +196,15 @@ const snapToEdges = () => {
     if (currentX < targetX - step) {
       currentX += step;
       ball.style.left = currentX + "px";
-      requestAnimationFrame(animate);
+      animationFrameId = requestAnimationFrame(animate);
     } else if (currentX > targetX + step) {
       currentX -= step;
       ball.style.left = currentX + "px";
-      requestAnimationFrame(animate);
+      animationFrameId = requestAnimationFrame(animate);
     } else {
       // 动画完成后将位置精确设置为目标位置
       ball.style.left = targetX + "px";
+      animationFrameId = null;
     }
   };
   animate();

@@ -1,7 +1,7 @@
 <template>
   <el-form ref="loginFormRef" :model="loginForm" :rules="loginRules" size="large">
     <el-form-item prop="username">
-      <el-input v-model="loginForm.username" placeholder="用户名：admin / user">
+      <el-input v-model="loginForm.username" :placeholder="$t('login.userName')">
         <template #prefix>
           <el-icon class="el-input__icon">
             <user />
@@ -10,7 +10,13 @@
       </el-input>
     </el-form-item>
     <el-form-item prop="password">
-      <el-input v-model="loginForm.password" type="password" placeholder="密码：123456" show-password autocomplete="new-password">
+      <el-input
+        v-model="loginForm.password"
+        type="password"
+        :placeholder="$t('login.password')"
+        show-password
+        autocomplete="new-password"
+      >
         <template #prefix>
           <el-icon class="el-input__icon">
             <lock />
@@ -18,49 +24,79 @@
         </template>
       </el-input>
     </el-form-item>
+    <div v-if="isCode" class="login-code">
+      <el-form-item prop="code">
+        <el-input class="code-input" v-model="loginForm.code" :placeholder="$t('login.code')">
+          <template #prefix>
+            <el-icon class="el-input__icon"><Warning /></el-icon>
+          </template>
+        </el-input>
+      </el-form-item>
+      <IdentifyComp @get-code="getCode"></IdentifyComp>
+    </div>
   </el-form>
   <div class="login-btn">
-    <el-button :icon="CircleClose" round size="large" @click="resetForm(loginFormRef)"> 重置 </el-button>
     <el-button :icon="UserFilled" round size="large" type="primary" :loading="loading" @click="login(loginFormRef)">
-      登录
+      {{ $t("login.login") }}
     </el-button>
   </div>
+  <PasswordDialog ref="passwordRef"></PasswordDialog>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from "vue";
+import i18n from "@/languages";
+import { ref, reactive, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import { HOME_URL } from "@/config";
-import { getTimeState } from "@/utils";
+import { getTimeState, encryptRsa } from "@/utils";
+import { synLanguageConfig } from "@/utils/language";
 import { Login } from "@/api/interface";
 import { ElNotification } from "element-plus";
-import { loginApi } from "@/api/modules/login";
+import { loginApi, queryCode } from "@/api/modules/login";
 import { useUserStore } from "@/stores/modules/user";
 import { useTabsStore } from "@/stores/modules/tabs";
 import { useKeepAliveStore } from "@/stores/modules/keepAlive";
 import { initDynamicRouter } from "@/routers/modules/dynamicRouter";
-import { CircleClose, UserFilled } from "@element-plus/icons-vue";
+import { UserFilled } from "@element-plus/icons-vue";
+import { useI18n } from "vue-i18n";
+import IdentifyComp from "@/components/Identify/identify.vue";
+import PasswordDialog from "@/layouts/components/Header/components/PasswordDialog.vue";
 import type { ElForm } from "element-plus";
-import md5 from "md5";
 
 const router = useRouter();
 const userStore = useUserStore();
 const tabsStore = useTabsStore();
 const keepAliveStore = useKeepAliveStore();
+const { t } = useI18n();
 
 type FormInstance = InstanceType<typeof ElForm>;
 const loginFormRef = ref<FormInstance>();
+const userNameRequired = computed(() => t("login.userNameRequired"));
+const passwordRequired = computed(() => t("login.passwordRequired"));
+const codeRequired = computed(() => t("login.codeRequired"));
 const loginRules = reactive({
-  username: [{ required: true, message: "请输入用户名", trigger: "blur" }],
-  password: [{ required: true, message: "请输入密码", trigger: "blur" }]
+  username: [{ required: true, message: userNameRequired, trigger: "blur" }],
+  password: [{ required: true, message: passwordRequired, trigger: "blur" }],
+  code: [{ required: true, message: codeRequired, trigger: "blur" }]
 });
 
 const loading = ref(false);
-const loginForm = reactive<Login.ReqLoginForm>({
-  username: "",
-  password: ""
-});
+const loginForm = reactive<Login.ReqLoginForm>({ username: "", password: "", code: "", language: "" });
 
+// 获取验证码
+const code = ref("");
+const getCode = (value: string) => {
+  code.value = value;
+};
+
+// 是否展示验证码
+let isCode = ref(false);
+const isCodeConf = async () => {
+  const { data } = await queryCode();
+  if (data.needVerificationCode === "true") {
+    isCode.value = true;
+  }
+};
 // login
 const login = (formEl: FormInstance | undefined) => {
   if (!formEl) return;
@@ -69,8 +105,13 @@ const login = (formEl: FormInstance | undefined) => {
     loading.value = true;
     try {
       // 1.执行登录接口
-      const { data } = await loginApi({ ...loginForm, password: md5(loginForm.password) });
-      userStore.setToken(data.access_token);
+      const language = i18n.global.locale.value;
+      const { data } = await loginApi({
+        ...loginForm,
+        password: encryptRsa(loginForm.password),
+        language: synLanguageConfig(language)
+      });
+      userStore.setToken(data.token);
 
       // 2.添加动态路由
       await initDynamicRouter();
@@ -93,12 +134,6 @@ const login = (formEl: FormInstance | undefined) => {
   });
 };
 
-// resetForm
-const resetForm = (formEl: FormInstance | undefined) => {
-  if (!formEl) return;
-  formEl.resetFields();
-};
-
 onMounted(() => {
   // 监听 enter 事件（调用登录）
   document.onkeydown = (e: KeyboardEvent) => {
@@ -108,6 +143,7 @@ onMounted(() => {
       login(loginFormRef.value);
     }
   };
+  // isCodeConf();
 });
 </script>
 

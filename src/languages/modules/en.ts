@@ -18,17 +18,30 @@ export default {
   header: {
     componentSize: "Component size",
     language: "Language",
-    theme: "theme",
-    layoutConfig: "Layout config",
-    primary: "primary",
+    layoutConfig: "Layout Config",
+    layoutSwitch: "Layout Switch",
+    layoutVertical: "Vertical",
+    layoutClassical: "Classical",
+    layoutHorizontal: "Horizontal",
+    layoutColumnar: "Columnar",
+    layoutTheme: "Layout Theme",
+    themeColor: "Theme Color",
     darkMode: "Dark Mode",
     greyMode: "Grey mode",
     weakMode: "Weak mode",
+    viewSetting: "View Setting",
+    collapseMenu: "Collapse Menu",
+    breadcrumb: "Breadcrumb",
+    breadcrumbIcon: "Breadcrumb Icon",
+    tabs: "Tabs",
+    tabsIcon: "Tabs Icon",
+    pageFooter: "Page Footer",
     fullScreen: "Full Screen",
     exitFullScreen: "Exit Full Screen",
     personalData: "Personal Data",
     changePassword: "Change Password",
-    logout: "Logout",
+    orgLabel: "Organization:",
+    deptLabel: "Department:",
     infoDialog: {
       title: "User BaseInfo",
       loginName: "Login Name:",
@@ -40,6 +53,23 @@ export default {
       email: "Email:",
       lastLoginTime: "Last Login Time:",
       uptPwd: "UpdatePwd"
+    },
+    pwdDialog: {
+      title: "Update Password",
+      oldPwd: "Old Password:",
+      newPwd: "New Password:",
+      confirmPwd: "Confirm Password:",
+      oldPwdHolder: "please input old password!",
+      newPwdHolder: "please input new password!",
+      cofPwdHolder: "please confirm new password!",
+      mesSuc: "update password success!",
+      button: "Save"
+    },
+    logout: {
+      cofMes: "Are you sure to log out?",
+      tipMes: "Kind Tips",
+      mesSuc: "Logout Success!",
+      name: "logout"
     }
   },
   footer: {
@@ -62,6 +92,22 @@ export default {
     codeError: "code error!",
     success: "Welcome to login!",
     firstLogin: "When you log in for the first time and the password expires, you need to change the password again!",
-    companyName: "SwordGate Information"
+    companyName: "SwordGate Information",
+    systemName: "Foreign Exchange Business Data Management System"
+  },
+  button: {
+    save: "save",
+    search: "search",
+    view: "view",
+    append: "Append",
+    finish: "Finish",
+    import: "Import",
+    export: "Export",
+    cancel: "Cancel",
+    confirm: "Confirm",
+    edit: "Edit",
+    delete: "Delete",
+    add: "Add",
+    reset: "Reset"
   }
 };

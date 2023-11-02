@@ -90,4 +90,4 @@ const goDetail = (id: string, state: string, title: string) => {
 };
 </script>
 
-<style lang="scss"></style>
+<style lang="scss" scoped></style>

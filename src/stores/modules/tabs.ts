@@ -19,7 +19,6 @@ export const useTabsStore = defineStore({
   actions: {
     // Add Tabs
     async addTabs(tabItem: TabsMenuProps) {
-      console.log("tabItem", tabItem);
       if (this.tabsMenuList.every(item => getPath(item.path) !== getPath(tabItem.path))) {
         this.tabsMenuList.push(tabItem);
       } else {

@@ -33,12 +33,16 @@
           >
           </ProTable>
         </div>
-        <div class="stretch" @mousedown="dragControllerDiv($event, taskCard)">
+        <!-- 拖拽拉伸 @mousedown="dragControllerDiv($event, taskCard)" -->
+        <div class="stretch">
           <More />
+          <span class="caret-wrapper">
+            <i class="sort-caret ascending" name="ascending" @mousedown="stretch($event, taskCard)"></i>
+            <i class="sort-caret descending" name="descending" @mousedown="stretch($event, taskCard)"></i>
+          </span>
         </div>
       </el-card>
       <el-card class="box-card" ref="logCard" name="logCard" style="height: 500px">
-        <div class="stretch" @mousedown="dragControllerDiv($event, logCard)" style="top: -61px"><More /></div>
         <template #header>
           <div class="card-header"><span class="card-title"></span> <span class="card-text">日志</span></div>
         </template>
@@ -53,6 +57,13 @@
           >
           </ProTable>
         </div>
+        <div class="stretch">
+          <More />
+          <span class="caret-wrapper">
+            <i class="sort-caret ascending" name="ascending" @mousedown="stretch($event, logCard)"></i>
+            <i class="sort-caret descending" name="descending" @mousedown="stretch($event, logCard)"></i>
+          </span>
+        </div>
       </el-card>
     </div>
     <RunBatchInfo v-if="runBatchVisible" v-model:runBatchVisible="runBatchVisible" ref="runBatchInfo"></RunBatchInfo>
@@ -65,7 +76,7 @@ import { ColumnProps } from "@/components/ProTable/interface";
 import { RunBatch } from "@/api/interface";
 import RunBatchInfo from "./components/runBatchInfo.vue";
 import { addTaskRunBatch, editTaskRunBatch, getTaskRunBatch, getLogRunBatch } from "@/api/modules/runBatch";
-import { computed, nextTick, reactive, ref } from "vue";
+import { computed, nextTick, onMounted, reactive, ref } from "vue";
 import { ElCard } from "element-plus";
 import { More } from "@element-plus/icons-vue";
 
@@ -81,8 +92,6 @@ const _searchParam = ref<SearchForm>({
 
 //控制新增/编辑弹窗是否显示
 const runBatchVisible = ref(false);
-
-const value = ref("");
 
 const options = [
   {
@@ -197,7 +206,7 @@ const logCard = ref();
 const offsetY = ref(0);
 let animationFrameId: number | null = null;
 
-//拖动控制器
+//拖动控制拉伸
 const dragControllerDiv = async (event: MouseEvent, card: InstanceType<typeof ElCard>) => {
   if (!card) return;
   //获取card 名称
@@ -205,8 +214,7 @@ const dragControllerDiv = async (event: MouseEvent, card: InstanceType<typeof El
   const cardName = cardDom.getAttribute("name");
   // const cardRect = cardDom.getBoundingClientRect();
   //获取目标元素
-  const height = Number(cardDom.style.height.replace("px", ""));
-  //去除height 的px
+  const height = Number(cardDom.style.height.replace("px", "")); //去除height 的px
   offsetY.value = event.clientY;
   // 设置样式
   // 获取或创建一个样式表
@@ -239,6 +247,61 @@ const dragControllerDiv = async (event: MouseEvent, card: InstanceType<typeof El
     animationFrameId = null;
     //移除样式
     styleSheet.deleteRule(ruleIndex);
+  };
+};
+
+//点击控制拉伸
+const stretch = (e: MouseEvent, card: InstanceType<typeof ElCard>) => {
+  //获取节点名称
+  const targetName = (e.target as HTMLElement).getAttribute("name") as string;
+  //给父节点设置class
+  const caretWrapper = (e.target as HTMLElement).parentElement as HTMLElement;
+  // 设置超出范围样式
+  // 获取或创建一个样式表
+  const styleSheet = document.styleSheets[0] || document.head.appendChild(document.createElement("style")).sheet;
+  // 定义要添加的样式规则
+  const rule = `* { cursor:${
+    targetName === "ascending" ? "n-resize" : "s-resize"
+  };pointer-events: none !important; user-select: none !important;}`;
+  // 添加样式规则到样式表
+  const ruleIndex = styleSheet.insertRule(rule, styleSheet.cssRules.length);
+
+  caretWrapper.classList.add(targetName);
+  let step = targetName === "ascending" ? -1 : 1; //步长 1 px
+  const mainDom = document.querySelector(".el-main");
+  let timeoutId_height: NodeJS.Timeout | null = null;
+  let timeoutId_scrollTop: NodeJS.Timeout | null = null;
+  //持续增加高度
+  const adjustHeight = async () => {
+    clearTimeout(timeoutId_height as NodeJS.Timeout);
+    clearTimeout(timeoutId_scrollTop as NodeJS.Timeout);
+    const cardDom = card.$el;
+    //去除height 的 px单位
+    const height = Number(cardDom.style.height.replace("px", ""));
+    if (height + step <= 500) return;
+    cancelAnimationFrame(animationFrameId as number);
+    timeoutId_height = setTimeout(() => {
+      //加延时，防止卡顿
+      cardDom.style.height = `${step + height}px`;
+    }, 10);
+    await nextTick();
+    let stepNegate = targetName === "ascending" ? 1 : -1;
+    timeoutId_scrollTop = setTimeout(() => {
+      //加延时，防止卡顿
+      //el-main页面也跟随滚动
+      mainDom && (mainDom.scrollTop = mainDom.scrollTop + stepNegate);
+    }, 10);
+    animationFrameId = requestAnimationFrame(adjustHeight);
+  };
+  animationFrameId = requestAnimationFrame(adjustHeight);
+
+  document.onmouseup = (e: MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    styleSheet.deleteRule(ruleIndex);
+    caretWrapper.classList.remove(targetName);
+    document.onmouseup = null;
+    cancelAnimationFrame(animationFrameId as number);
   };
 };
 
@@ -301,9 +364,13 @@ const reset = () => {
   flex-direction: column;
   width: 100%;
   height: 100%;
-  .box-card {
-    transition: height 0.1s;
+  .el-card {
+    overflow: unset;
   }
+
+  // .box-card {
+  //   transition: height 0.1s;
+  // }
   /* stylelint-disable-next-line scss/double-slash-comment-whitespace-inside */
   //选择非最后一个box-card
   .box-card:not(:last-child) {
@@ -353,14 +420,52 @@ const reset = () => {
   background-position: center;
   background-size: cover;
   border-radius: 5px;
-  &:hover {
-    cursor: row-resize;
-  }
+
+  // &:hover {
+  //   cursor: row-resize;
+  // }
   svg {
     display: inline-block;
     width: 1em;
     height: 1em;
     fill: currentcolor;
   }
+}
+.stretch:hover .caret-wrapper {
+  visibility: visible;
+}
+.caret-wrapper {
+  position: absolute;
+  top: -11px;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  width: 30px;
+  height: 29px;
+  overflow: initial;
+  vertical-align: middle;
+  cursor: pointer;
+  visibility: hidden;
+  .sort-caret {
+    position: absolute;
+    left: 7px;
+    width: 0;
+    height: 0;
+    border: solid 8px transparent;
+  }
+  .sort-caret.ascending {
+    top: -5px;
+    border-bottom-color: var(--el-text-color-placeholder);
+  }
+  .sort-caret.descending {
+    bottom: -3px;
+    border-top-color: var(--el-text-color-placeholder);
+  }
+}
+.ascending .sort-caret.ascending {
+  border-bottom-color: var(--el-color-primary);
+}
+.descending .sort-caret.descending {
+  border-top-color: var(--el-color-primary);
 }
 </style>

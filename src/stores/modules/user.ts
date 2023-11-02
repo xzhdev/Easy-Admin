@@ -5,7 +5,7 @@ import piniaPersistConfig from "@/stores/helper/persist";
 export const useUserStore = defineStore({
   id: "swordgate-user",
   state: (): UserState => ({
-    token: "swordgate",
+    token: "",
     userInfo: { name: "swordgate" },
     coreInfo: {
       coreOrg: "1",

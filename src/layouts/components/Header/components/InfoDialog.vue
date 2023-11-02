@@ -114,8 +114,8 @@
                       <el-icon class="passwordIcon"><Edit /></el-icon>{{ $t("header.infoDialog.uptPwd") }}
                     </el-button>
                     &nbsp;
-                    <el-button type="primary" size="small">
-                      <el-icon><SwitchButton /></el-icon>{{ $t("header.logout") }}
+                    <el-button type="primary" size="small" @click="logout">
+                      <el-icon><SwitchButton /></el-icon>{{ $t("header.logout.name") }}
                     </el-button>
                   </el-form-item>
                 </el-col>
@@ -133,16 +133,25 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { useGlobalStore } from "@/stores/modules/global";
-// import { useUserStore } from "@/stores/modules/user";
-import PasswordDialog from "./PasswordDialog.vue";
+import { useUserStore } from "@/stores/modules/user";
 import { useIsTextOverFlowed } from "@/hooks/useIsTextOverFlowed";
+import { useI18n } from "vue-i18n";
+import { logoutApi } from "@/api/modules/login";
+import { ElMessage, ElMessageBox } from "element-plus";
+import PasswordDialog from "./PasswordDialog.vue";
+import { useRouter } from "vue-router";
+import { LOGIN_URL } from "@/config";
+
 const globalStore = useGlobalStore();
 const isCollapse = computed(() => globalStore.isCollapse);
-// const userStore = useUserStore();
+const userStore = useUserStore();
+const router = useRouter();
+
 const { getShowTooltip, isTextOverflowed } = useIsTextOverFlowed();
+const { t } = useI18n();
 
 //登录信息
-// const logInInfo: any = userStore.userInfo;
+const logInInfo: any = userStore.userInfo;
 
 interface DialogExpose {
   openDialog: () => void;
@@ -151,6 +160,25 @@ const passwordRef = ref<null | DialogExpose>(null);
 // 打开修改密码和个人信息弹窗
 const openDialog = (refName: string) => {
   if (refName == "passwordRef") passwordRef.value?.openDialog();
+};
+
+// 退出登录
+const logout = () => {
+  ElMessageBox.confirm(t("header.logout.cofMes"), t("header.logout.tipMes"), {
+    confirmButtonText: t("button.confirm"),
+    cancelButtonText: t("button.cancel"),
+    type: "warning"
+  }).then(async () => {
+    // 1.调用退出登录接口
+    await logoutApi();
+    console.log(11);
+    // 2.清除 Token
+    userStore.setToken("");
+
+    // 4.重定向到登陆页
+    router.replace(LOGIN_URL);
+    ElMessage.success(t("header.logout.mesSuc"));
+  });
 };
 </script>
 

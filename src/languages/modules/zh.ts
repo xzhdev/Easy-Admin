@@ -18,17 +18,30 @@ export default {
   header: {
     componentSize: "组件大小",
     language: "国际化",
-    theme: "全局主题",
     layoutConfig: "布局设置",
-    primary: "primary",
+    layoutSwitch: "布局切换",
+    layoutVertical: "纵向",
+    layoutClassical: "经典",
+    layoutHorizontal: "横向",
+    layoutColumnar: "分栏",
+    layoutTheme: "全局主题",
+    themeColor: "主题颜色",
     darkMode: "暗黑模式",
     greyMode: "灰色模式",
     weakMode: "色弱模式",
+    viewSetting: "界面设置",
+    collapseMenu: "折叠菜单",
+    breadcrumb: "面包屑",
+    breadcrumbIcon: "面包屑图标",
+    tabs: "标签栏",
+    tabsIcon: "标签栏图标",
+    pageFooter: "页脚",
     fullScreen: "全屏",
     exitFullScreen: "退出全屏",
     personalData: "个人信息",
     changePassword: "修改密码",
-    logout: "退出登录",
+    orgLabel: "所属机构:",
+    deptLabel: "所属部门:",
     infoDialog: {
       title: "用户基本信息",
       loginName: "登录名：",
@@ -40,6 +53,23 @@ export default {
       email: "邮箱：",
       lastLoginTime: "上次登录时间：",
       uptPwd: "修改密码"
+    },
+    pwdDialog: {
+      title: "修改密码",
+      oldPwd: "旧密码：",
+      newPwd: "新密码：",
+      confirmPwd: "确认新密码：",
+      oldPwdHolder: "请输入旧密码！",
+      newPwdHolder: "请输入新密码！",
+      cofPwdHolder: "请确认新密码！",
+      mesSuc: "修改密码成功！",
+      button: "保存"
+    },
+    logout: {
+      cofMes: "您是否确认退出登录？",
+      tipMes: "温馨提示",
+      mesSuc: "退出登录成功！",
+      name: "退出登录"
     }
   },
   footer: {
@@ -62,6 +92,22 @@ export default {
     codeError: "验证码错误！",
     success: "欢迎登录！",
     firstLogin: "首次登录与密码过期时，需要重新修改密码！",
-    companyName: "剑阁信息"
+    companyName: "剑阁信息",
+    systemName: "外汇业务数据管理系统"
+  },
+  button: {
+    save: "保存",
+    search: "搜索",
+    view: "查看",
+    append: "添加",
+    finish: "完成",
+    import: "导入",
+    export: "导出",
+    cancel: "取消",
+    confirm: "确认",
+    edit: "编辑",
+    delete: "删除",
+    add: "新增",
+    reset: "重置"
   }
 };

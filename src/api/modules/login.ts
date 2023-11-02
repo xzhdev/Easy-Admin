@@ -16,6 +16,11 @@ export const loginApi = (params: Login.ReqLoginForm) => {
   // return http.get<Login.ResLogin>(PORT1 + `/login?${qs.stringify(params, { arrayFormat: "repeat" })}`); // get 请求可以携带数组等复杂参数
 };
 
+// * 获取当前登录用户信息
+export const getUserInfo = () => {
+  return http.get<ResultData>(PORT1 + `/userInfo`);
+};
+
 // 获取菜单列表
 export const getAuthMenuListApi = () => {
   return http.get<Menu.MenuOptions[]>(PORT1 + `/menu/list`, {}, { loading: false });
@@ -33,4 +38,14 @@ export const getAuthButtonListApi = () => {
 // 用户退出登录
 export const logoutApi = () => {
   return http.post(PORT1 + `/logout`);
+};
+
+// * 用户修改密码
+export const updatePwd = (params: any) => {
+  return http.post(PORT1 + `/updatePwd`, params);
+};
+
+// * 获取是否开启验证码
+export const queryCode = () => {
+  return http.get<Login.ResCode>(PORT1 + `/queryCode`);
 };

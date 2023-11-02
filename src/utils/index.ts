@@ -1,5 +1,7 @@
 import { isArray } from "@/utils/is";
 import { FieldNamesProps } from "@/components/ProTable/interface";
+import i18n from "@/languages";
+import JSEncrypt from "jsencrypt";
 
 const mode = import.meta.env.VITE_ROUTER_MODE;
 
@@ -112,11 +114,22 @@ export function randomNum(min: number, max: number): number {
 export function getTimeState() {
   let timeNow = new Date();
   let hours = timeNow.getHours();
-  if (hours >= 6 && hours <= 10) return `早上好 ⛅`;
-  if (hours >= 10 && hours <= 14) return `中午好 🌞`;
-  if (hours >= 14 && hours <= 18) return `下午好 🌞`;
-  if (hours >= 18 && hours <= 24) return `晚上好 🌛`;
-  if (hours >= 0 && hours <= 6) return `凌晨好 🌛`;
+  //判断语言环境
+  if (i18n.global.locale.value === "zh") {
+    // 判断当前时间段
+    if (hours >= 6 && hours <= 10) return `早上好 ⛅`;
+    if (hours >= 10 && hours <= 14) return `中午好 🌞`;
+    if (hours >= 14 && hours <= 18) return `下午好 🌞`;
+    if (hours >= 18 && hours <= 24) return `晚上好 🌛`;
+    if (hours >= 0 && hours <= 6) return `凌晨好 🌛`;
+  } else {
+    // 判断当前时间段
+    if (hours >= 6 && hours <= 10) return `Good Morning ⛅`;
+    if (hours >= 10 && hours <= 14) return `Good Noon 🌞`;
+    if (hours >= 14 && hours <= 18) return `Good Afternoon 🌞`;
+    if (hours >= 18 && hours <= 24) return `Good Evening 🌛`;
+    if (hours >= 0 && hours <= 6) return `Good Night 🌛`;
+  }
 }
 
 /**
@@ -308,4 +321,16 @@ export function findItemNested(enumData: any, callValue: any, value: string, chi
     if (current[value] === callValue) return current;
     if (current[children]) return findItemNested(current[children], callValue, value, children);
   }, null);
+}
+
+/**
+ * @description RSA 加密
+ */
+export function encryptRsa(password: any) {
+  // 公钥
+  const publicKey =
+    "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCaempBUTlDzwbSgbSNfTR9LqGICwjZL9SE3GxL7R9n952joCdYXyKuL/J3w9fwybGCjLR13n4vkMr5TaplSFLavuRONKpcwzxDD0UbNB1ED74/bYkC+uch8MYVLBaEJY7z8xmvdjO2gAh9zPJJB0lfksS4bgjew9ofg5UdhyWluQIDAQAB";
+  const encryptor = new JSEncrypt();
+  encryptor.setPublicKey(publicKey); // 设置公钥
+  return encryptor.encrypt(password); // 对需要加密的数据进行加密
 }
