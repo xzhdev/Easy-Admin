@@ -269,24 +269,20 @@ const stretch = (e: MouseEvent, card: InstanceType<typeof ElCard>) => {
   caretWrapper.classList.add(targetName);
   let step = targetName === "ascending" ? -1 : 1; //步长 1 px
   const mainDom = document.querySelector(".el-main");
-  let timeoutId_height: NodeJS.Timeout | null = null;
-  let timeoutId_scrollTop: NodeJS.Timeout | null = null;
   //持续增加高度
   const adjustHeight = async () => {
-    clearTimeout(timeoutId_height as NodeJS.Timeout);
-    clearTimeout(timeoutId_scrollTop as NodeJS.Timeout);
     const cardDom = card.$el;
     //去除height 的 px单位
     const height = Number(cardDom.style.height.replace("px", ""));
     if (height + step <= 500) return;
     cancelAnimationFrame(animationFrameId as number);
-    timeoutId_height = setTimeout(() => {
+    setTimeout(() => {
       //加延时，防止卡顿
       cardDom.style.height = `${step + height}px`;
     }, 10);
     await nextTick();
     let stepNegate = targetName === "ascending" ? 1 : -1;
-    timeoutId_scrollTop = setTimeout(() => {
+    setTimeout(() => {
       //加延时，防止卡顿
       //el-main页面也跟随滚动
       mainDom && (mainDom.scrollTop = mainDom.scrollTop + stepNegate);
@@ -302,6 +298,10 @@ const stretch = (e: MouseEvent, card: InstanceType<typeof ElCard>) => {
     caretWrapper.classList.remove(targetName);
     document.onmouseup = null;
     cancelAnimationFrame(animationFrameId as number);
+    //进行垃圾回收
+    if (typeof window !== "undefined") {
+      window.gc && window.gc();
+    }
   };
 };
 
