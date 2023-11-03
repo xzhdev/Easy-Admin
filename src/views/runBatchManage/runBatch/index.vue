@@ -268,7 +268,7 @@ const stretch = (e: MouseEvent, card: InstanceType<typeof ElCard>) => {
 
   caretWrapper.classList.add(targetName);
   let step = targetName === "ascending" ? -1 : 1; //步长 1 px
-  const mainDom = document.querySelector(".el-main");
+  const mainDom = document.querySelector(".el-main") as HTMLElement;
   //持续增加高度
   const adjustHeight = async () => {
     const cardDom = card.$el;
@@ -380,6 +380,7 @@ const reset = () => {
     display: flex;
     flex-direction: column;
     .el-card__body {
+      position: relative;
       display: flex;
       flex: 1;
       flex-direction: column;
@@ -405,8 +406,8 @@ const reset = () => {
   margin-bottom: 15px;
 }
 .stretch {
-  position: relative;
-  top: 15px;
+  position: absolute;
+  bottom: 0;
   left: 50%;
   display: flex;
   align-items: center;

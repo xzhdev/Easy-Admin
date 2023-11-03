@@ -254,7 +254,7 @@
   .el-dialog__header {
     padding: 15px 20px;
     margin: 0;
-    background-color: rgb(234 241 252);
+    background-color: var(--el-color-primary-light-7);
     border-bottom: 1px solid var(--el-border-color-lighter);
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
@@ -263,9 +263,10 @@
     }
   }
   .el-dialog__footer {
-    background-color: rgb(234 241 252);
+    // background-color: rgb(234 241 252);
     border-bottom-right-radius: 10px;
     border-bottom-left-radius: 10px;
+    box-shadow: 0 -1px 0 0 var(--el-border-color-lighter);
   }
 }
 
@@ -345,4 +346,20 @@
     max-height: 100%;
     overflow: hidden auto;
   }
+}
+
+/* 滚动条公共样式 */
+.el-scrollbar {
+  // 横向滚动条
+  .el-scrollbar__bar.is-horizontal {
+    height: 10px;
+  }
+
+  // 纵向滚动条
+  .el-scrollbar__bar.is-vertical {
+    width: 10px;
+  }
+}
+::-webkit-scrollbar {
+  width: 10px;
 }

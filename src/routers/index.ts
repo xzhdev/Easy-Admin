@@ -42,7 +42,6 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   const userStore = useUserStore();
   const authStore = useAuthStore();
-  console.log(userStore.token);
   // 1.NProgress 开始
   NProgress.start();
 
