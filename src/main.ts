@@ -32,6 +32,8 @@ import I18n from "@/languages/index";
 import pinia from "@/stores";
 // errorHandler
 import errorHandler from "@/utils/errorHandler";
+// disable devtool
+import disableDevtool from "disable-devtool";
 
 const app = createApp(App);
 
@@ -41,5 +43,7 @@ app.config.errorHandler = errorHandler;
 Object.keys(Icons).forEach(key => {
   app.component(key, Icons[key as keyof typeof Icons]);
 });
+
+import.meta.env.VITE_USER_NODE_ENV === "production" && disableDevtool();
 
 app.use(ElementPlus).use(directives).use(router).use(I18n).use(pinia).mount("#app");
