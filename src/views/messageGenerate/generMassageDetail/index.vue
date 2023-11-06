@@ -18,25 +18,27 @@
 </template>
 
 <script setup lang="tsx" name="generMassageDetail">
-import { ComponentPublicInstance, reactive, ref } from "vue";
+import { ComponentPublicInstance, computed, reactive, ref } from "vue";
 import { getGenerateMessageList } from "@/api/modules/messageGenerate";
-import ProTable from "@/components/ProTable/index.vue";
 import { ColumnProps } from "@/components/ProTable/interface";
 import { Report } from "@/api/interface";
+import { usePageStore } from "@/stores/modules/page";
+import ProTable from "@/components/ProTable/index.vue";
 
-//获取跳转来自哪个path
-const backPath = ref("");
-const backPathList = ["/messageGenerate/generateMessage"]; //需要返回的path，考虑到可能会有其他页面跳转到该页面的情况，所以需要一个数组存储需要返回的path
+//获取跳转来自哪个页面
+const pageStore = usePageStore();
+const backPath = computed(() => pageStore.getPageBackName("generMassageDetail"));
+const backPathList = ["/messageGenerate/generateMessage"]; //需要返回的页面的path，考虑到可能会有其他页面跳转到该页面的情况，所以需要一个数组存储需要返回的path
 interface IInstance extends ComponentPublicInstance {
-  backPath: string;
   backPathList: string[];
+  pageStore: any;
 }
 defineOptions({
   beforeRouteEnter(_to, _from, next) {
     next(vm => {
       const instance = vm as IInstance;
       if (instance.backPathList.includes(_from.path)) {
-        instance.backPath = _from.fullPath;
+        instance.pageStore.setPageBackName("generMassageDetail", _from.fullPath);
       }
     });
   }
@@ -78,7 +80,7 @@ const columns = reactive<ColumnProps<Report.ResFunds>[]>([
   }
 ]);
 
-defineExpose({ backPath, backPathList });
+defineExpose({ backPathList, pageStore });
 </script>
 
 <style scoped></style>

@@ -70,4 +70,7 @@ export interface PageState {
   tabTitles: {
     [key: string]: string;
   };
+  pageBacks: {
+    [key: string]: string;
+  };
 }

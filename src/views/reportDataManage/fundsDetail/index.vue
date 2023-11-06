@@ -58,24 +58,26 @@ import { useI18n } from "vue-i18n";
 import ProTable from "@/components/ProTable/index.vue";
 import LoanDialog from "./components/LoanDialog.vue";
 import VerResultDialog from "./components/VerResultDialog.vue";
-const { t } = useI18n();
+import { usePageStore } from "@/stores/modules/page";
 
+const { t } = useI18n();
 const tabStore = useTabsStore();
 const route = useRoute();
 
-//获取跳转来自哪个path
-const backPath = ref("");
-const backPathList = ["/reportDataManage/orgFunds"]; //需要返回的path，考虑到可能会有其他页面跳转到fundsDetail的情况，所以需要一个数组存储需要返回的path
+//获取跳转来自哪个页面
+const pageStore = usePageStore();
+const backPath = computed(() => pageStore.getPageBackName("fundsDetail"));
+const backPathList = ["/reportDataManage/orgFunds"]; //需要返回的页面的path，考虑到可能会有其他页面跳转到该页面的情况，所以需要一个数组存储需要返回的path
 interface IInstance extends ComponentPublicInstance {
-  backPath: string;
   backPathList: string[];
+  pageStore: any;
 }
 defineOptions({
   beforeRouteEnter(_to, _from, next) {
     next(vm => {
       const instance = vm as IInstance;
       if (instance.backPathList.includes(_from.path)) {
-        instance.backPath = _from.fullPath;
+        instance.pageStore.setPageBackName("fundsDetail", _from.fullPath);
       }
     });
   }
@@ -314,7 +316,7 @@ const openVerResultDialog = async (row: Partial<Report.ResDetailFunds>) => {
   verResultDialog.value?.acceptParams(params);
 };
 
-defineExpose({ backPath, backPathList });
+defineExpose({ pageStore, backPathList });
 </script>
 
 <style scoped></style>
