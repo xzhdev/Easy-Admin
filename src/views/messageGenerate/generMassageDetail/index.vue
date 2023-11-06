@@ -8,6 +8,7 @@
       :init-param="initParam"
       :columns="columns"
       :table-loading="true"
+      :back-path="backPath"
     >
       <template #tableHeader>
         <el-button type="primary">生成报文</el-button>
@@ -17,12 +18,32 @@
 </template>
 
 <script setup lang="tsx" name="generMassageDetail">
-import { reactive } from "vue";
+import { ComponentPublicInstance, reactive, ref } from "vue";
 import { getGenerateMessageList } from "@/api/modules/messageGenerate";
 import ProTable from "@/components/ProTable/index.vue";
 import { ColumnProps } from "@/components/ProTable/interface";
 import { Report } from "@/api/interface";
 
+//获取跳转来自哪个path
+const backPath = ref("");
+const backPathList = ["/messageGenerate/generateMessage"]; //需要返回的path，考虑到可能会有其他页面跳转到该页面的情况，所以需要一个数组存储需要返回的path
+interface IInstance extends ComponentPublicInstance {
+  backPath: string;
+  backPathList: string[];
+}
+defineOptions({
+  beforeRouteEnter(_to, _from, next) {
+    next(vm => {
+      const instance = vm as IInstance;
+      if (instance.backPathList.includes(_from.path)) {
+        instance.backPath = _from.fullPath;
+      }
+    });
+  }
+});
+
+//初始化请求数据
+const initParam = reactive({});
 // 表格配置项
 const columns = reactive<ColumnProps<Report.ResFunds>[]>([
   { type: "index", label: "序号", width: 80 },
@@ -57,8 +78,7 @@ const columns = reactive<ColumnProps<Report.ResFunds>[]>([
   }
 ]);
 
-//初始化请求数据
-const initParam = reactive({});
+defineExpose({ backPath, backPathList });
 </script>
 
 <style scoped></style>
