@@ -101,7 +101,8 @@ const initParam = reactive({});
 const authStore = useAuthStore();
 const pageStore = usePageStore();
 
-onBeforeRouteLeave(to => {
+onBeforeRouteLeave((to, form) => {
+  console.log("onBeforeRouteLeave", to, form);
   //处理跳转待提交/待审核/审核通过页面
   if (to.name === "fundsDetail") {
     to.meta.title = pageStore.getPageTabTitleName(to.name);

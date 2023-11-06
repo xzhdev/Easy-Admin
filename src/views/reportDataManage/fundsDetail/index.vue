@@ -9,11 +9,12 @@
       :init-param="initParam"
       :columns="columns"
       :table-loading="true"
+      :back-path="backPath"
     >
       <template #tableHeader>
         <!-- 待提交 -->
         <div v-if="type === '0'">
-          <el-button @click="openLoanDialog('新增')">新增</el-button>
+          <el-button @click="openLoanDialog($t('button.add'))">{{ $t("button.add") }}</el-button>
           <el-button>校验</el-button>
           <el-button @click="openVerResultDialog">校验结果查看</el-button>
           <el-button>提交</el-button>
@@ -46,28 +47,40 @@
 </template>
 
 <script setup lang="tsx" name="fundsDetail">
-import { nextTick, onActivated, reactive, ref } from "vue";
-import { useRoute, onBeforeRouteUpdate } from "vue-router";
+import { ComponentPublicInstance, computed, nextTick, onActivated, reactive, ref } from "vue";
+import { useRoute } from "vue-router";
 import { useTabsStore } from "@/stores/modules/tabs";
 import { getFundsList } from "@/api/modules/report";
-import ProTable from "@/components/ProTable/index.vue";
 import { ColumnProps, ProTableInstance } from "@/components/ProTable/interface";
 import { Report } from "@/api/interface";
+import { addLoan, editLoan } from "@/api/modules/report";
+import { useI18n } from "vue-i18n";
+import ProTable from "@/components/ProTable/index.vue";
 import LoanDialog from "./components/LoanDialog.vue";
 import VerResultDialog from "./components/VerResultDialog.vue";
-import { addLoan, editLoan } from "@/api/modules/report";
-// import { Back } from "@element-plus/icons-vue";
+const { t } = useI18n();
 
 const tabStore = useTabsStore();
 const route = useRoute();
 
-onBeforeRouteUpdate((to, from) => {
-  console.log(to, from);
-
-  if (to.query.id !== from.query.id) {
-    console.log("lanjie");
+//获取跳转来自哪个path
+const backPath = ref("");
+const backPathList = ["/reportDataManage/orgFunds"]; //需要返回的path，考虑到可能会有其他页面跳转到fundsDetail的情况，所以需要一个数组存储需要返回的path
+interface IInstance extends ComponentPublicInstance {
+  backPath: string;
+  backPathList: string[];
+}
+defineOptions({
+  beforeRouteEnter(_to, _from, next) {
+    next(vm => {
+      const instance = vm as IInstance;
+      if (instance.backPathList.includes(_from.path)) {
+        instance.backPath = _from.fullPath;
+      }
+    });
   }
 });
+
 //接收路由参数
 const type = ref<string>("0");
 
@@ -85,9 +98,11 @@ const initInfo = () => {
   //设置tabs title
   console.log("title", route.meta.title);
   if (route.query.state && typeof route.query.state === "string") {
+    console.log("route", route);
     type.value = route.query.state;
     title.value = types[route.query.state as keyof typeof types];
     route.meta.title = title;
+
     tabStore.setTabsTitle(title.value);
   }
 };
@@ -140,9 +155,9 @@ const columns = reactive<ColumnProps<Report.ResFunds>[]>([
     render: scope => {
       return (
         <>
-          <el-text class="mx-1 mouse-pointer" type="primary" onClick={() => goPendingAudit()}>
+          <el-button link type="primary" onClick={() => goPendingAudit()}>
             {scope.row.pendingAudit}
-          </el-text>
+          </el-button>
         </>
       );
     }
@@ -235,10 +250,10 @@ const columns = reactive<ColumnProps<Report.ResFunds>[]>([
     label: "操作",
     fixed: "right",
     width: 250,
-    render: () => {
+    render: scope => {
       return (
         <>
-          <el-button type="primary" link>
+          <el-button type="primary" link onClick={() => openLoanDialog(t("button.edit"), scope.row)}>
             编辑
           </el-button>
           <el-button type="primary" link>
@@ -277,9 +292,8 @@ const loanDialog = ref<InstanceType<typeof LoanDialog> | null>(null);
 const openLoanDialog = async (title: string, row: Partial<Report.ResDetailFunds> = {}) => {
   const params = {
     title,
-    isView: title === "新增",
     row: { ...row },
-    api: title === "新增" ? addLoan : title === "编辑" ? editLoan : undefined,
+    api: title === t("button.add") ? addLoan : title === t("button.edit") ? editLoan : undefined,
     getTableList: proTable.value?.getTableList
   };
   loanVisible.value = true;
@@ -299,7 +313,8 @@ const openVerResultDialog = async (row: Partial<Report.ResDetailFunds>) => {
   await nextTick();
   verResultDialog.value?.acceptParams(params);
 };
+
+defineExpose({ backPath, backPathList });
 </script>
 
 <style scoped></style>
-@/api/modules/report@/api/modules/report

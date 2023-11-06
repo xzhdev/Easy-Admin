@@ -58,9 +58,9 @@ const columns = reactive<ColumnProps<MessageGenerate.ResMessage>[]>([
     render: scope => {
       return (
         <>
-          <el-text class="mx-1 mouse-pointer" type="primary" onClick={() => goDetail("123", "0", "待提交")}>
+          <el-button link type="primary" onClick={() => goDetail("123", "0", "待提交")}>
             {scope.row.notGenerateNumber}
-          </el-text>
+          </el-button>
         </>
       );
     }

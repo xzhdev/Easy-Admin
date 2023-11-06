@@ -1,7 +1,9 @@
 <template>
   <div class="runbatch-box">
     <div class="card search">
-      <div class="header-button-lf"><el-button type="primary" @click="openRunBatchDialog('新增')">新增</el-button></div>
+      <div class="header-button-lf">
+        <el-button type="primary" @click="openRunBatchDialog($t('button.add'))">{{ $t("button.add") }}</el-button>
+      </div>
       <div class="header-button-ri">
         <el-form :inline="true">
           <el-form-item label="报表名称：">
@@ -72,13 +74,16 @@
 
 <script setup lang="tsx" name="runBatch">
 import ProTable from "@/components/ProTable/index.vue";
+import RunBatchInfo from "./components/runBatchInfo.vue";
 import { ColumnProps } from "@/components/ProTable/interface";
 import { RunBatch } from "@/api/interface";
-import RunBatchInfo from "./components/runBatchInfo.vue";
 import { addTaskRunBatch, editTaskRunBatch, getTaskRunBatch, getLogRunBatch } from "@/api/modules/runBatch";
 import { computed, nextTick, onMounted, reactive, ref } from "vue";
 import { ElCard } from "element-plus";
 import { More } from "@element-plus/icons-vue";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 interface SearchForm {
   reportName: string;
@@ -147,7 +152,7 @@ const columns_task = reactive<ColumnProps<RunBatch.ResTaskList>[]>([
           <el-button link type="primary">
             跑批
           </el-button>
-          <el-button link type="primary">
+          <el-button link type="primary" onClick={() => openRunBatchDialog(t("button.edit"), scope.row)}>
             编辑
           </el-button>
           <el-button link type="primary">
@@ -190,9 +195,8 @@ const runBatchInfo = ref<InstanceType<typeof RunBatchInfo> | null>(null);
 const openRunBatchDialog = async (title: string, row: Partial<RunBatch.ResTaskList> = {}) => {
   const params = {
     title,
-    isView: title === "新增",
     row: { ...row },
-    api: title === "新增" ? addTaskRunBatch : title === "编辑" ? editTaskRunBatch : undefined,
+    api: title === t("button.add") ? addTaskRunBatch : title === t("button.edit") ? editTaskRunBatch : undefined,
     getTableList: proTableTask.value?.getTableList
   };
   runBatchVisible.value = true;

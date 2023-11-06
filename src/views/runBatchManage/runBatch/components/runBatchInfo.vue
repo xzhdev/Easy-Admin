@@ -1,5 +1,12 @@
 <template>
-  <el-dialog title="新增" v-model="dialogVisible" :destroy-on-close="true" width="500px" draggable @close="closeDialog">
+  <el-dialog
+    :title="runBatchProps.title"
+    v-model="dialogVisible"
+    :destroy-on-close="true"
+    width="500px"
+    draggable
+    @close="closeDialog"
+  >
     <component :is="'el-form'" v-bind="options.form" ref="proFormRef" :model="model" :rules="rules">
       <template v-for="item in options.columns" :key="item.prop">
         <component :is="'el-form-item'" v-bind="item.formItem">
@@ -20,6 +27,7 @@
 import { FormInstance, FormRules } from "element-plus";
 import { reactive, ref } from "vue";
 import { RunBatch } from "@/api/interface";
+import { useDebounceFn } from "@vueuse/core";
 
 //关闭对话框
 const emit = defineEmits(["update:runBatchVisible"]);
@@ -110,7 +118,7 @@ const rules = reactive<FormRules>({
 
 //保存
 const proFormRef = ref<FormInstance>();
-const saveFrom = async () => {
+const saveFrom = useDebounceFn(async () => {
   if (!proFormRef.value) return;
   await proFormRef.value.validate(valid => {
     if (valid) {
@@ -123,7 +131,7 @@ const saveFrom = async () => {
       });
     }
   });
-};
+}, 1000);
 
 //重置
 const resetForm = () => {
@@ -134,14 +142,12 @@ const resetForm = () => {
 //接收父组件传过来的参数
 interface RunBatchProps {
   title: string;
-  isView: boolean;
   row: Partial<RunBatch.ResTaskList>;
   api?: (params: any) => Promise<any>;
   getTableList?: () => void;
 }
 
 const runBatchProps = ref<RunBatchProps>({
-  isView: false,
   title: "",
   row: {}
 });

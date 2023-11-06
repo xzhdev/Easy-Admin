@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    title="新增"
+    :title="loanProps.title"
     ref="dialogRef"
     v-model="dialogVisible"
     :destroy-on-close="true"
@@ -60,6 +60,7 @@ import { getFundsList } from "@/api/modules/report";
 import { ColumnProps } from "@/components/ProTable/interface";
 import ProTable from "@/components/ProTable/index.vue";
 import { DArrowRight } from "@element-plus/icons-vue";
+import { useDebounceFn } from "@vueuse/core";
 import type { FormInstance } from "element-plus";
 
 //控制会话框打开/关闭
@@ -68,14 +69,12 @@ const dialogVisible = ref(false);
 //接收父组件传过来的参数
 interface LoanProps {
   title: string;
-  isView: boolean;
   row: Partial<Report.ResDetailFunds>;
   api?: (params: any) => Promise<any>;
   getTableList?: () => void;
 }
 
 const loanProps = ref<LoanProps>({
-  isView: false,
   title: "",
   row: {}
 });
@@ -418,7 +417,8 @@ const columns = reactive<ColumnProps<Report.ResFunds>[]>([
 
 // 保存表单
 const proFormRef = ref<FormInstance>();
-const saveFrom = async () => {
+const saveFrom = useDebounceFn(async () => {
+  console.log("触发");
   if (!proFormRef.value) return;
   await proFormRef.value.validate(valid => {
     if (valid) {
@@ -431,7 +431,7 @@ const saveFrom = async () => {
       });
     }
   });
-};
+}, 1000);
 
 const collapsedChange = async () => {
   collapsed.value = !collapsed.value;

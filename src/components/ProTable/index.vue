@@ -4,10 +4,10 @@
     v-show="isShowSearch"
     :search="_search"
     :reset="_reset"
+    :back="props.backPath ? back : undefined"
     :columns="searchColumns"
     :search-param="searchParam"
     :search-col="searchCol"
-    :table-loading="true"
   />
   <!-- 表格主体 -->
   <div class="card table-main">
@@ -111,11 +111,17 @@ import { BreakPoint } from "@/components/Grid/interface";
 import { ColumnProps, TypeProps } from "@/components/ProTable/interface";
 import { Refresh, Operation, Search } from "@element-plus/icons-vue";
 import { handleProp } from "@/utils";
+import { useRoute } from "vue-router";
+import { useTabsStore } from "@/stores/modules/tabs";
 import SearchForm from "@/components/SearchForm/index.vue";
 import Pagination from "./components/Pagination.vue";
 import ColSetting from "./components/ColSetting.vue";
 import TableColumn from "./components/TableColumn.vue";
 import Sortable from "sortablejs";
+import router from "@/routers";
+
+const route = useRoute();
+const tabStore = useTabsStore();
 
 export interface ProTableProps {
   columns: ColumnProps[]; // 列配置项  ==> 必传
@@ -131,7 +137,8 @@ export interface ProTableProps {
   toolButton?: ("refresh" | "setting" | "search")[] | boolean; // 是否显示表格功能按钮 ==> 非必传（默认为true）
   rowKey?: string; // 行数据的 Key，用来优化 Table 的渲染，当表格数据多选时，所指定的 id ==> 非必传（默认为 id）
   searchCol?: number | Record<BreakPoint, number>; // 表格搜索项 每列占比配置 ==> 非必传 { xs: 1, sm: 2, md: 2, lg: 3, xl: 4 }
-  tableLoading?: boolean; // 是否显示加载中 ==> 非必传（默认为false）
+  tableLoading?: boolean; // 是否显示加载中 ==> 非必传（默认为false）,
+  backPath?: string; // 返回按钮的跳转路径，若为 '' 则不显示
 }
 
 // 接受父组件参数，配置默认值
@@ -289,6 +296,17 @@ const _search = () => {
 const _reset = () => {
   reset();
   emit("reset");
+};
+
+const back = () => {
+  closeCurrentTab();
+  router.push({ path: props.backPath as string });
+};
+
+// 关闭当前页面
+const closeCurrentTab = () => {
+  if (route.meta.isAffix) return;
+  tabStore.removeTabs(route.fullPath);
 };
 
 // 拖拽排序

@@ -36,6 +36,39 @@
   border-radius: 6px;
   box-shadow: 0 0 12px rgb(0 0 0 / 5%);
 }
+.activeBack {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.activeBack::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  padding: 0;
+  font-size: 10px;
+  color: #000000;
+  content: "";
+  border-color: var(--el-color-primary-light-7) transparent transparent var(--el-color-primary-light-7);
+  border-style: solid;
+  border-width: 20px;
+}
+.activeBack::after {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  font-size: 10px;
+  cursor: pointer;
+  content: "";
+  background-image: url("src/assets/icons/back.svg");
+  background-repeat: no-repeat;
+  background-size: 16px;
+}
 
 /* ProTable 不需要 card 样式（在组件内使用 ProTable 会使用到） */
 .no-card {
@@ -98,6 +131,7 @@
 
   // table-search 表格搜索样式
   .table-search {
+    position: relative;
     padding: 18px 18px 0;
     margin-bottom: 10px;
     .el-form {

@@ -1,5 +1,6 @@
 <template>
   <div v-if="columns.length" class="card table-search">
+    <div class="activeBack" v-if="back" @click="back"></div>
     <el-form ref="formRef" :model="searchParam">
       <Grid ref="gridRef" :collapsed="collapsed" :gap="[20, 0]" :cols="searchCol">
         <GridItem v-for="(item, index) in columns" :key="item.prop" v-bind="getResponsive(item)" :index="index">
@@ -47,6 +48,7 @@ interface ProTableProps {
   searchCol: number | Record<BreakPoint, number>;
   search: (params: any) => void; // 搜索方法
   reset: (params: any) => void; // 重置方法
+  back?: () => void;
 }
 
 // 默认值
