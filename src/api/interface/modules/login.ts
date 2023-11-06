@@ -1,7 +1,7 @@
 // 登录模块
 export interface ReqLoginForm {
   username: string;
-  password: string | boolean;
+  password: string;
   code: string;
   language: string;
 }

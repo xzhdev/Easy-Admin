@@ -180,6 +180,9 @@ const logout = () => {
     ElMessage.success(t("header.logout.mesSuc"));
   });
 };
+defineExpose({
+  openDialog
+});
 </script>
 
 <style scoped lang="scss">

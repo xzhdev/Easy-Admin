@@ -332,5 +332,5 @@ export function encryptRsa(password: any) {
     "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCaempBUTlDzwbSgbSNfTR9LqGICwjZL9SE3GxL7R9n952joCdYXyKuL/J3w9fwybGCjLR13n4vkMr5TaplSFLavuRONKpcwzxDD0UbNB1ED74/bYkC+uch8MYVLBaEJY7z8xmvdjO2gAh9zPJJB0lfksS4bgjew9ofg5UdhyWluQIDAQAB";
   const encryptor = new JSEncrypt();
   encryptor.setPublicKey(publicKey); // 设置公钥
-  return encryptor.encrypt(password); // 对需要加密的数据进行加密
+  return encryptor.encrypt(password) as string; // 对需要加密的数据进行加密
 }

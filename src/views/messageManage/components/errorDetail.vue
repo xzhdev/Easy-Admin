@@ -19,6 +19,7 @@ import ProTable from "@/components/ProTable/index.vue";
 import { MessageManage } from "@/api/interface";
 import { getFeedbackMesParseErrorList } from "@/api/modules/messageManage";
 import { ref, reactive } from "vue";
+import { ColumnProps } from "@/components/ProTable/interface";
 
 interface ErrorDetailProps {
   getTableList?: () => void; //刷新父组件数据接口

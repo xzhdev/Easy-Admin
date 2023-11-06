@@ -6,7 +6,7 @@
         :key="id"
         :class="[{ 'sub-menu': subMenu, selected, disabled, flip, divider }, 'menu-list-item', menuStyle]"
         :style="getTheme"
-        @mousedown="handleMenuItemClick($event, id, name, subMenu, index, disabled, divider)"
+        @mousedown="handleMenuItemClick($event, index, id, name, subMenu, disabled, divider)"
       >
         <template v-if="!divider">
           <div :class="menuItemClass" @click="$event.stopPropagation()">
@@ -49,7 +49,7 @@ import { PropType, ref, resolveComponent, computed, onMounted, watch, nextTick }
 import ChevRightIcon from "./icons/ChevRightIcon.vue";
 import PlusIcon from "./icons/PlusIcon.vue";
 import MinusIcon from "./icons/MinusIcon.vue";
-import { MenuItem, Theme, ThemeDefault } from "./types/index";
+import { Menu, MenuItem, Theme, ThemeDefault } from "./types/index";
 
 const props = defineProps({
   data: {
@@ -65,7 +65,7 @@ const props = defineProps({
     default: null
   },
   onClose: {
-    type: Function as PropType<(event: MouseEvent) => void>,
+    type: Function as PropType<(event: any) => void>,
     default: null,
     required: true
   },
@@ -129,12 +129,12 @@ const toggleMenu = (id?: string, selectFirstItem?: boolean) => {
 
 const handleMenuItemClick = (
   event: MouseEvent,
-  id: string,
-  name: string,
-  subMenu: boolean,
   index: number,
-  disabled: boolean,
-  divider: boolean
+  id?: string,
+  name?: string,
+  subMenu?: Menu,
+  disabled?: boolean,
+  divider?: boolean
 ) => {
   event.stopPropagation();
   event.preventDefault();
@@ -145,7 +145,7 @@ const handleMenuItemClick = (
 
   activeIndex.value = index;
 
-  selectMenuItem(name, id, subMenu, false);
+  selectMenuItem(name, id, !!subMenu, false);
 };
 
 // gets theme colors
@@ -231,7 +231,7 @@ const handleKeyUp = (event: KeyboardEvent) => {
       props.onClose("ArrowRight");
     }
   } else if (keyCode === "Escape") {
-    props.onClose();
+    props.onClose("Escape");
   }
 };
 
