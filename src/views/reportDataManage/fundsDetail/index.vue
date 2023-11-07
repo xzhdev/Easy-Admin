@@ -9,7 +9,7 @@
       :init-param="initParam"
       :columns="columns"
       :table-loading="true"
-      :back-path="backPath"
+      :back-button="true"
     >
       <template #tableHeader>
         <!-- 待提交 -->
@@ -64,25 +64,6 @@ const { t } = useI18n();
 const tabStore = useTabsStore();
 const route = useRoute();
 
-//获取跳转来自哪个页面
-const pageStore = usePageStore();
-const backPath = computed(() => pageStore.getPageBackName("fundsDetail"));
-const backPathList = ["/reportDataManage/orgFunds"]; //需要返回的页面的path，考虑到可能会有其他页面跳转到该页面的情况，所以需要一个数组存储需要返回的path
-interface IInstance extends ComponentPublicInstance {
-  backPathList: string[];
-  pageStore: any;
-}
-defineOptions({
-  beforeRouteEnter(_to, _from, next) {
-    next(vm => {
-      const instance = vm as IInstance;
-      if (instance.backPathList.includes(_from.path)) {
-        instance.pageStore.setPageBackName("fundsDetail", _from.fullPath);
-      }
-    });
-  }
-});
-
 //接收路由参数
 const type = ref<string>("0");
 
@@ -98,17 +79,13 @@ onActivated(() => {
 
 const initInfo = () => {
   //设置tabs title
-  console.log("title", route.meta.title);
   if (route.query.state && typeof route.query.state === "string") {
-    console.log("route", route);
     type.value = route.query.state;
     title.value = types[route.query.state as keyof typeof types];
     route.meta.title = title;
-
     tabStore.setTabsTitle(title.value);
   }
 };
-initInfo();
 
 // 表格配置项
 const columns = reactive<ColumnProps<Report.ResFunds>[]>([
@@ -273,18 +250,10 @@ const columns = reactive<ColumnProps<Report.ResFunds>[]>([
 //初始化请求数据
 const initParam = reactive({});
 
-// // 前往待提交页面
-// const goPendingSubmit = () => {
-//   console.log("待提交");
-// };
 // 前往待审核页面
 const goPendingAudit = () => {
   console.log("待提交");
 };
-// // 前往审核通过页面
-// const goPassAudit = () => {
-//   console.log("待提交");
-// };
 
 // ProTable 实例
 const proTable = ref<ProTableInstance>();
@@ -315,8 +284,6 @@ const openVerResultDialog = async (row: Partial<Report.ResDetailFunds>) => {
   await nextTick();
   verResultDialog.value?.acceptParams(params);
 };
-
-defineExpose({ pageStore, backPathList });
 </script>
 
 <style scoped></style>

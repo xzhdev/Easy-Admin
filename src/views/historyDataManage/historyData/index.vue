@@ -17,11 +17,13 @@
 import { reactive } from "vue";
 import { ColumnProps } from "@/components/ProTable/interface";
 import { getHistoryDataList } from "@/api/modules/historyData";
-import ProTable from "@/components/ProTable/index.vue";
 import { HistoryData } from "@/api/interface";
 import { useRouter } from "vue-router";
+import { usePageStore } from "@/stores/modules/page";
+import ProTable from "@/components/ProTable/index.vue";
 
 const router = useRouter();
+const pageStore = usePageStore();
 
 //初始化请求参数
 const initParam = reactive({});
@@ -58,6 +60,7 @@ const columns = reactive<ColumnProps<HistoryData.ResHistoryData>[]>([
 
 const goHistoryDetail = () => {
   const query = {};
+  pageStore.setPageBackName("historyDataDetail", "/historyDataManage/historyData");
   router.push({ name: "historyDataDetail", path: `historyDataManage/historyData/detail`, query });
 };
 </script>

@@ -20,13 +20,14 @@
 import { reactive } from "vue";
 import { useAuthStore } from "@/stores/modules/auth";
 import { usePageStore } from "@/stores/modules/page";
-import { onBeforeRouteLeave, useRouter } from "vue-router";
+import { onBeforeRouteLeave, useRouter, useRoute } from "vue-router";
 import { getFundsList } from "@/api/modules/report";
 import ProTable from "@/components/ProTable/index.vue";
 import { ColumnProps } from "@/components/ProTable/interface";
 import { Report } from "@/api/interface";
 
 const router = useRouter();
+const route = useRoute();
 
 // 表格配置项
 const columns = reactive<ColumnProps<Report.ResFunds>[]>([
@@ -106,8 +107,7 @@ onBeforeRouteLeave((to, form) => {
   //处理跳转待提交/待审核/审核通过页面
   if (to.name === "fundsDetail") {
     to.meta.title = pageStore.getPageTabTitleName(to.name);
-    // console.log(to.meta.title);
-    // authStore.updateMetaTitle(to.path, to.meta.title as string);
+    authStore.updateMetaTitle(to.path, to.meta.title as string); //更新当前路由的meta title,让面包屑跟随tab title的更改
   }
 });
 
@@ -115,6 +115,7 @@ onBeforeRouteLeave((to, form) => {
 const goFundsDetail = (id: string, state: string, title: string) => {
   const query = { id, state };
   pageStore.setPageTabTitleName("fundsDetail", title);
+  pageStore.setPageBackName("fundsDetail", "/reportDataManage/orgFunds");
   router.push({ name: "fundsDetail", path: `/reportDataManage/funds/detail`, query });
 };
 </script>

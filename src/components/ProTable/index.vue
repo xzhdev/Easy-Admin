@@ -4,7 +4,7 @@
     v-show="isShowSearch"
     :search="_search"
     :reset="_reset"
-    :back="props.backPath ? back : undefined"
+    :back="props.backButton ? back : undefined"
     :columns="searchColumns"
     :search-param="searchParam"
     :search-col="searchCol"
@@ -111,17 +111,19 @@ import { BreakPoint } from "@/components/Grid/interface";
 import { ColumnProps, TypeProps } from "@/components/ProTable/interface";
 import { Refresh, Operation, Search } from "@element-plus/icons-vue";
 import { handleProp } from "@/utils";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useTabsStore } from "@/stores/modules/tabs";
 import SearchForm from "@/components/SearchForm/index.vue";
+import { usePageStore } from "@/stores/modules/page";
 import Pagination from "./components/Pagination.vue";
 import ColSetting from "./components/ColSetting.vue";
 import TableColumn from "./components/TableColumn.vue";
 import Sortable from "sortablejs";
-import router from "@/routers";
 
 const route = useRoute();
+const router = useRouter();
 const tabStore = useTabsStore();
+const pageStore = usePageStore();
 
 export interface ProTableProps {
   columns: ColumnProps[]; // 列配置项  ==> 必传
@@ -138,7 +140,7 @@ export interface ProTableProps {
   rowKey?: string; // 行数据的 Key，用来优化 Table 的渲染，当表格数据多选时，所指定的 id ==> 非必传（默认为 id）
   searchCol?: number | Record<BreakPoint, number>; // 表格搜索项 每列占比配置 ==> 非必传 { xs: 1, sm: 2, md: 2, lg: 3, xl: 4 }
   tableLoading?: boolean; // 是否显示加载中 ==> 非必传（默认为false）,
-  backPath?: string; // 返回按钮的跳转路径，若为 '' 则不显示
+  backButton?: boolean; // 是否显示返回按钮 ==> 非必传
 }
 
 // 接受父组件参数，配置默认值
@@ -151,7 +153,8 @@ const props = withDefaults(defineProps<ProTableProps>(), {
   toolButton: true,
   rowKey: "id",
   searchCol: () => ({ xs: 1, sm: 2, md: 2, lg: 3, xl: 4 }),
-  tableLoading: false
+  tableLoading: false,
+  backButton: false
 });
 
 // table 实例
@@ -299,8 +302,12 @@ const _reset = () => {
 };
 
 const back = () => {
+  //获取当前路由名称
+  const routeName = route.name;
+  console.log("获取当前路由名称", routeName);
+  const backPath = pageStore.getPageBackName(routeName as string);
   closeCurrentTab();
-  router.push({ path: props.backPath as string });
+  router.push({ path: backPath });
 };
 
 // 关闭当前页面

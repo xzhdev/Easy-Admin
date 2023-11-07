@@ -5,28 +5,29 @@ import piniaPersistConfig from "@/stores/helper/persist";
 export const usePageStore = defineStore({
   id: "swordgate-page",
   state: (): PageState => ({
-    tabTitles: {}, //设置跳转详情页面对应的tab title
-    pageBacks: {} //页面对应返回的path，防止刷新后，返回按钮失效
+    pagesInfo: {}
   }),
   actions: {
     // Set TabTitles
-    setPageTabTitleName(path: string, titleName: string) {
-      this.tabTitles[path] = titleName;
+    setPageTabTitleName(targetPageName: string, titleName: string) {
+      this.pagesInfo[targetPageName] = this.pagesInfo[targetPageName] || {};
+      this.pagesInfo[targetPageName].tabTitle = titleName;
     },
 
     //Get TabTitles
-    getPageTabTitleName(path: string) {
-      return this.tabTitles[path];
+    getPageTabTitleName(targetPageName: string) {
+      return this.pagesInfo[targetPageName]?.tabTitle;
     },
 
     // Set PageBacks
-    setPageBackName(currentPageName: string, backPath: string) {
-      this.pageBacks[currentPageName] = backPath;
+    setPageBackName(targetPageName: string, backPath: string) {
+      this.pagesInfo[targetPageName] = this.pagesInfo[targetPageName] || {};
+      this.pagesInfo[targetPageName].backPath = backPath;
     },
 
     //Get PageBacks
     getPageBackName(currentPageName: string) {
-      return this.pageBacks[currentPageName];
+      return this.pagesInfo[currentPageName]?.backPath;
     }
   },
   persist: piniaPersistConfig("swordgate-page")

@@ -19,11 +19,19 @@ export const useTabsStore = defineStore({
   actions: {
     // Add Tabs
     async addTabs(tabItem: TabsMenuProps) {
-      if (this.tabsMenuList.every(item => getPath(item.path) !== getPath(tabItem.path))) {
+      const path = getPath(tabItem.path);
+      const isPathUnique = this.tabsMenuList.every(item => getPath(item.path) !== path);
+
+      //getPath 获取非完整路径，同一路径不重复打开新标签
+      if (isPathUnique) {
         this.tabsMenuList.push(tabItem);
       } else {
-        const index = this.tabsMenuList.findIndex(item => getPath(item.path) === getPath(tabItem.path));
-        if (index > -1) this.tabsMenuList.splice(index, 1, tabItem);
+        // path 路径相同，但fullPath不同时更新，防止fullPath不变，但总是更新的情况
+        const index = this.tabsMenuList.findIndex(item => getPath(item.path) === path && item.path !== tabItem.path);
+        if (index > -1) {
+          // 更新
+          this.tabsMenuList.splice(index, 1, tabItem);
+        }
       }
       // add keepalive
       if (!keepAliveStore.keepAliveName.includes(tabItem.name) && tabItem.isKeepAlive) {

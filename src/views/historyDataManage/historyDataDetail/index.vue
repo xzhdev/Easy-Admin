@@ -8,6 +8,7 @@
       :init-param="initParam"
       :columns="columns"
       :table-loading="true"
+      :back-button="true"
     >
       <template #tableHeader>
         <el-button type="primary">导出</el-button>

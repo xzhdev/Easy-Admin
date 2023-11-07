@@ -67,10 +67,10 @@ export interface KeepAliveState {
 /* PageState */
 
 export interface PageState {
-  tabTitles: {
-    [key: string]: string;
-  };
-  pageBacks: {
-    [key: string]: string;
+  pagesInfo: {
+    [key: string]: {
+      tabTitle: string; //设置跳转详情页面对应的tab title
+      backPath: string; //页面对应返回的path，防止刷新后，返回按钮失效
+    };
   };
 }

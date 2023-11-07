@@ -18,14 +18,12 @@
 
 <script setup lang="tsx" name="generateMessage">
 import { reactive, ref } from "vue";
-import { useAuthStore } from "@/stores/modules/auth";
 import { usePageStore } from "@/stores/modules/page";
-import { onBeforeRouteLeave } from "vue-router";
 import { getMessageGenerateList } from "@/api/modules/messageGenerate";
-import ProTable from "@/components/ProTable/index.vue";
 import { useRouter } from "vue-router";
 import { ColumnProps } from "@/components/ProTable/interface";
 import { MessageGenerate } from "@/api/interface";
+import ProTable from "@/components/ProTable/index.vue";
 
 // 表格配置项
 const columns = reactive<ColumnProps<MessageGenerate.ResMessage>[]>([
@@ -70,22 +68,13 @@ const columns = reactive<ColumnProps<MessageGenerate.ResMessage>[]>([
 //初始化请求数据
 const initParam = reactive({});
 
-//动态更改详情tag标题
-const authStore = useAuthStore();
+const router = useRouter();
 const pageStore = usePageStore();
 
-onBeforeRouteLeave(to => {
-  //处理跳转待提交/待审核/审核通过页面
-  if (to.name === "fundsDetail") {
-    to.meta.title = pageStore.getPageTabTitleName(to.name);
-    authStore.updateMetaTitle(to.path, to.meta.title as string);
-  }
-});
-
-const router = useRouter();
 //生成报文详情页
 const goDetail = (id: string, state: string, title: string) => {
   const query = { id, state };
+  pageStore.setPageBackName("generMassageDetail", "/messageGenerate/generateMessage");
   router.push({ name: "generMassageDetail", path: `/messageGenerate/generMassage/detail`, query });
 };
 </script>
