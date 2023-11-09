@@ -2,7 +2,7 @@
 <template>
   <el-container class="layout">
     <el-aside>
-      <div class="aside-box" :style="{ width: isCollapse ? '65px' : '210px' }">
+      <div class="aside-box" :style="{ width: isCollapse ? '65px' : '230px' }">
         <div class="logo flx-justify-evenly" style="flex-direction: column">
           <img class="logo-img" src="@/assets/images/logo.jpg" alt="logo" />
           <div v-show="!isCollapse" class="logo-text">{{ $t("aside.title") }}</div>

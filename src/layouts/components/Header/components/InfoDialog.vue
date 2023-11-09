@@ -1,8 +1,9 @@
 <template>
   <div>
+    <!--减去 折叠65px,展开230px 和 10px边距 -->
     <el-popover
       placement="bottom-start"
-      :width="isCollapse ? 'calc(100% - 75px)' : 'calc(100% - 220px)'"
+      :width="isCollapse ? 'calc(100% - 65px - 10px)' : 'calc(100% - 230px - 10px)'"
       trigger="click"
       :teleported="false"
       :popper-options="{

@@ -15,7 +15,7 @@
         <!-- 待提交 -->
         <div v-if="type === '0'">
           <el-button @click="openLoanDialog($t('button.add'))">{{ $t("button.add") }}</el-button>
-          <el-button>校验</el-button>
+          <el-button @click="openVerProcess">校验</el-button>
           <el-button @click="openVerResultDialog">校验结果查看</el-button>
           <el-button>提交</el-button>
           <el-button>申请删除</el-button>
@@ -55,10 +55,10 @@ import { ColumnProps, ProTableInstance } from "@/components/ProTable/interface";
 import { Report } from "@/api/interface";
 import { addLoan, editLoan } from "@/api/modules/report";
 import { useI18n } from "vue-i18n";
+import { useVerify } from "@/hooks/useVerify";
 import ProTable from "@/components/ProTable/index.vue";
 import LoanDialog from "./components/LoanDialog.vue";
 import VerResultDialog from "./components/VerResultDialog.vue";
-import { usePageStore } from "@/stores/modules/page";
 
 const { t } = useI18n();
 const tabStore = useTabsStore();
@@ -283,6 +283,12 @@ const openVerResultDialog = async (row: Partial<Report.ResDetailFunds>) => {
   };
   await nextTick();
   verResultDialog.value?.acceptParams(params);
+};
+
+// 打开 openVerProcess（校验）
+const openVerProcess = async () => {
+  //传递勾选数据,未勾选则为全选
+  useVerify(proTable.value?.selectedList ?? []);
 };
 </script>
 
