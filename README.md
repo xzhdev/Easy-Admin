@@ -4,10 +4,8 @@
 - **Clone：**
 
 ```text
-# Gitee
-git clone https://gitee.com/HalseySpicy/Geeker-Admin.git
 # GitHub
-git clone https://github.com/HalseySpicy/Geeker-Admin.git
+git clone https://github.com/xzhdev/Easy-Admin.git
 ```
 
 - **Install：**
