@@ -2,10 +2,10 @@
  * 遍历列的所有内容，获取最宽一列的宽度
  * @param arr
  */
-const getMaxLength = (arr: string[]) => {
+const getMaxLength = (arr: string[], context: CanvasRenderingContext2D) => {
   return arr.reduce((acc, item) => {
     if (item) {
-      const calcLen = getTextWidth(item);
+      const calcLen = getTextWidth(item, context);
       if (acc < calcLen) {
         acc = calcLen;
       }
@@ -13,24 +13,18 @@ const getMaxLength = (arr: string[]) => {
     return acc;
   }, 0);
 };
+
 /**
- * 使用span标签包裹内容，然后计算span的宽度 width： px
- * @param valArr
+ * 使用 Canvas 绘制文本并测量宽度
+ * @param str
+ * @param context
  */
-let fragment = document.createDocumentFragment();
-const getTextWidth = (str: string) => {
-  const span = document.createElement("span");
-  span.style.visibility = "hidden";
-  span.className = "columnsWidthSpan";
-  span.style.position = "absolute";
-  span.style.whiteSpace = "nowrap";
-  span.innerText = str;
-  fragment.appendChild(span);
-  // 将文档片段附加到 body 中
-  document.body.appendChild(fragment);
-  const width = span.getBoundingClientRect().width;
+const getTextWidth = (str: string, context: CanvasRenderingContext2D) => {
+  context.font = "16px Arial"; // 设置字体样式
+  const width = context.measureText(str).width;
   return width;
 };
+
 /**
  * el-table-column 自适应列宽
  * @param processTableData: 表格数据
@@ -39,18 +33,22 @@ const getTextWidth = (str: string) => {
  */
 const flexColumnWidth = (processTableData: any[], label: string, prop: string) => {
   if (!processTableData || processTableData.length === 0) return;
+
+  const canvas = document.createElement("canvas");
+  const context = canvas.getContext("2d") as CanvasRenderingContext2D;
+
   // 1.获取该列的所有数据
   const arr = processTableData.map((x: { [x: string]: any }) => {
-    // console.log(x[prop]);
     return x[prop];
   });
   arr.push(label); // 把每列的表头也加进去算
+
   // 2.计算每列内容最大的宽度 + 表格的内间距（依据实际情况而定）
-  let maxLength = getMaxLength(arr);
-  // 3.统一移除span标签
-  document.querySelectorAll(".columnsWidthSpan").forEach(function (el) {
-    el.parentNode?.removeChild(el);
-  });
+  let maxLength = getMaxLength(arr, context);
+
+  // 3.释放 Canvas 对象
+  canvas.remove();
+
   return maxLength > 200 ? 200 + 25 + "px" : maxLength + 25 + "px";
 };
 
