@@ -30,8 +30,7 @@ const columns = reactive<ColumnProps<MessageGenerate.ResMessage>[]>([
   { type: "index", label: "序号", width: 80 },
   {
     prop: "moduleName",
-    label: "所属模块名称",
-    width: "auto"
+    label: "所属模块名称"
   },
   {
     prop: "formName",

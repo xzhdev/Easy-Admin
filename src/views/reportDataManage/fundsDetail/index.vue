@@ -104,7 +104,6 @@ const columns = reactive<ColumnProps<Report.ResFunds>[]>([
   {
     prop: "operationName",
     label: "操作名",
-    fixed: "left",
     search: {
       el: "tree-select",
       props: { filterable: true }
@@ -113,13 +112,11 @@ const columns = reactive<ColumnProps<Report.ResFunds>[]>([
   {
     prop: "dataRollback",
     label: "数据打回",
-    fixed: "left",
     isShow: type.value === "0"
   },
   {
     prop: "validationStatus",
     label: "校验状态",
-    fixed: "left",
     search: {
       el: "tree-select",
       props: { filterable: true }
@@ -128,7 +125,6 @@ const columns = reactive<ColumnProps<Report.ResFunds>[]>([
   {
     prop: "auditFailureReason",
     label: "审核不通过原因",
-    fixed: "left",
     render: scope => {
       return (
         <>

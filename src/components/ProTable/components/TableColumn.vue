@@ -34,7 +34,7 @@ const RenderTableColumn = (item: ColumnProps) => {
         <el-table-column
           {...item}
           align={item.align ?? "center"}
-          min-width={flexColumnWidth(tableData.value, item.label as string, item.prop as string)}
+          min-width={item.minWidth ?? flexColumnWidth(tableData.value, item.label as string, item.prop as string)}
           showOverflowTooltip={item.showOverflowTooltip ?? item.prop !== "operation"}
         >
           {{
