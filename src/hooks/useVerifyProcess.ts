@@ -1,17 +1,19 @@
 import { ElMessageBox, ElMessage, ElProgress } from "element-plus";
-import { h, ref } from "vue";
+import { h, nextTick, ref } from "vue";
 
 /**
  * @description 校验流程 数据校验数量确认 -> 展示校验进度 -> 展示校验结果
  * @param {Array} selectedList 校验的数据数组
  * */
-export const useVerify = async (selectedList: any[]) => {
+export const useVerifyProcess = async (selectedList: any[] = []) => {
   ElMessageBox.confirm(
     selectedList.length > 0 ? `确认校验${selectedList.length}条数据吗？` : "确认校验全部数据吗？",
     "数据校验",
     {
       confirmButtonText: "确认",
       cancelButtonText: "取消",
+      closeOnClickModal: false,
+      showClose: false,
       type: "warning"
     }
   )
@@ -26,9 +28,10 @@ export const useVerify = async (selectedList: any[]) => {
           closeOnClickModal: false,
           message: () =>
             h(ElProgress, {
-              striped: true,
-              stripedFlow: true,
-              strokeWidth: 15,
+              striped: true, //条纹
+              stripedFlow: true, //流动
+              strokeWidth: 20, //宽度
+              textInside: true, //行内
               percentage: percentage.value
             })
         });
@@ -49,6 +52,8 @@ export const useVerify = async (selectedList: any[]) => {
             ElMessageBox.confirm("校验成功10条；校验失败1条", "数据校验完成", {
               confirmButtonText: "确认",
               showCancelButton: false,
+              closeOnClickModal: false,
+              showClose: false,
               type: "success"
             });
           }

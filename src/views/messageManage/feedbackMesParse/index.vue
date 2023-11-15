@@ -35,8 +35,8 @@ const columns = reactive<ColumnProps<MessageManage.ResMessageParse>[]>([
     label: "解析日期",
     minWidth: 120,
     search: {
-      el: "tree-select",
-      props: { filterable: true }
+      el: "date-picker",
+      props: { type: "date", valueFormat: "YYYY-MM-DD" }
     }
   },
   {

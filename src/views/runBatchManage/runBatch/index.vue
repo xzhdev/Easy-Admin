@@ -79,7 +79,7 @@ import { ColumnProps } from "@/components/ProTable/interface";
 import { RunBatch } from "@/api/interface";
 import { addTaskRunBatch, editTaskRunBatch, getTaskRunBatch, getLogRunBatch } from "@/api/modules/runBatch";
 import { computed, nextTick, onMounted, reactive, ref } from "vue";
-import { ElCard } from "element-plus";
+import { ElCard, ElMessage } from "element-plus";
 import { More } from "@element-plus/icons-vue";
 import { useI18n } from "vue-i18n";
 
@@ -278,7 +278,7 @@ const stretch = (e: MouseEvent, card: InstanceType<typeof ElCard>) => {
     const cardDom = card.$el;
     //去除height 的 px单位
     const height = Number(cardDom.style.height.replace("px", ""));
-    if (height + step <= 500) return;
+    if (height + step <= 500) return ElMessage.warning("已达到最小高度！");
     cancelAnimationFrame(animationFrameId as number);
     setTimeout(() => {
       //加延时，防止卡顿
@@ -461,10 +461,16 @@ const reset = () => {
   .sort-caret.ascending {
     top: -5px;
     border-bottom-color: var(--el-text-color-placeholder);
+    &:hover {
+      border-bottom-color: var(--el-color-primary);
+    }
   }
   .sort-caret.descending {
     bottom: -3px;
     border-top-color: var(--el-text-color-placeholder);
+    &:hover {
+      border-top-color: var(--el-color-primary);
+    }
   }
 }
 .ascending .sort-caret.ascending {

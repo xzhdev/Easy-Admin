@@ -15,7 +15,7 @@
         <!-- 待提交 -->
         <div v-if="type === '0'">
           <el-button @click="openLoanDialog($t('button.add'))">{{ $t("button.add") }}</el-button>
-          <el-button @click="openVerProcess">校验</el-button>
+          <el-button @click="handleVerProcess">校验</el-button>
           <el-button @click="openVerResultDialog">校验结果查看</el-button>
           <el-button>提交</el-button>
           <el-button>申请删除</el-button>
@@ -47,7 +47,7 @@
 </template>
 
 <script setup lang="tsx" name="fundsDetail">
-import { ComponentPublicInstance, computed, nextTick, onActivated, reactive, ref } from "vue";
+import { nextTick, onActivated, reactive, ref } from "vue";
 import { useRoute } from "vue-router";
 import { useTabsStore } from "@/stores/modules/tabs";
 import { getFundsList } from "@/api/modules/report";
@@ -55,7 +55,8 @@ import { ColumnProps, ProTableInstance } from "@/components/ProTable/interface";
 import { Report } from "@/api/interface";
 import { addLoan, editLoan } from "@/api/modules/report";
 import { useI18n } from "vue-i18n";
-import { useVerify } from "@/hooks/useVerify";
+import { useVerifyProcess } from "@/hooks/useVerifyProcess";
+import { useTableSelectResTips } from "@/hooks/useTableSelectResTips";
 import ProTable from "@/components/ProTable/index.vue";
 import LoanDialog from "./components/LoanDialog.vue";
 import VerResultDialog from "./components/VerResultDialog.vue";
@@ -285,10 +286,12 @@ const openVerResultDialog = async (row: Partial<Report.ResDetailFunds>) => {
   verResultDialog.value?.acceptParams(params);
 };
 
-// 打开 openVerProcess（校验）
-const openVerProcess = async () => {
-  //传递勾选数据,未勾选则为全选
-  useVerify(proTable.value?.selectedList ?? []);
+// 校验
+const handleVerProcess = async () => {
+  useTableSelectResTips(proTable.value?.selectedList, null, () => {
+    //传递勾选数据,未勾选则为全选
+    useVerifyProcess(proTable.value?.selectedList);
+  });
 };
 </script>
 

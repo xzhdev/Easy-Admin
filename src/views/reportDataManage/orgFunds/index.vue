@@ -10,7 +10,7 @@
       :table-loading="true"
     >
       <template #tableHeader>
-        <el-button type="primary">一键校验</el-button>
+        <el-button type="primary" @click="handleVerProcess">一键校验</el-button>
       </template>
     </ProTable>
   </div>
@@ -22,9 +22,10 @@ import { useAuthStore } from "@/stores/modules/auth";
 import { usePageStore } from "@/stores/modules/page";
 import { onBeforeRouteLeave, useRouter, useRoute } from "vue-router";
 import { getFundsList } from "@/api/modules/report";
-import ProTable from "@/components/ProTable/index.vue";
 import { ColumnProps } from "@/components/ProTable/interface";
 import { Report } from "@/api/interface";
+import { useVerifyProcess } from "@/hooks/useVerifyProcess";
+import ProTable from "@/components/ProTable/index.vue";
 
 const router = useRouter();
 const route = useRoute();
@@ -117,6 +118,11 @@ const goFundsDetail = (id: string, state: string, title: string) => {
   pageStore.setPageTabTitleName("fundsDetail", title);
   pageStore.setPageBackName("fundsDetail", "/reportDataManage/orgFunds");
   router.push({ name: "fundsDetail", path: `/reportDataManage/funds/detail`, query });
+};
+
+// 校验
+const handleVerProcess = async () => {
+  useVerifyProcess();
 };
 </script>
 
