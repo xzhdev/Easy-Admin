@@ -6,6 +6,8 @@
 import { inject, ref, useSlots } from "vue";
 import { ColumnProps, RenderScope, HeaderRenderScope } from "@/components/ProTable/interface";
 import { filterEnum, formatValue, handleProp, handleRowAccordingToProp } from "@/utils";
+import { flexColumnWidth } from "@/utils/columnsWidth";
+const tableData = inject("tableData", ref([]));
 
 defineProps<{ column: ColumnProps }>();
 
@@ -32,6 +34,7 @@ const RenderTableColumn = (item: ColumnProps) => {
         <el-table-column
           {...item}
           align={item.align ?? "center"}
+          min-width={flexColumnWidth(tableData.value, item.label as string, item.prop as string)}
           showOverflowTooltip={item.showOverflowTooltip ?? item.prop !== "operation"}
         >
           {{

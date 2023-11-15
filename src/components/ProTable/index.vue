@@ -241,6 +241,8 @@ const setEnumMap = async ({ prop, enum: enumValue }: ColumnProps) => {
 
 // 注入 enumMap
 provide("enumMap", enumMap);
+// 注入 tableData
+provide("tableData", processTableData);
 
 // 扁平化 columns 的方法
 const flatColumnsFunc = (columns: ColumnProps[], flatArr: ColumnProps[] = []) => {

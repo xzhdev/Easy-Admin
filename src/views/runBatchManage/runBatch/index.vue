@@ -134,8 +134,7 @@ const columns_task = reactive<ColumnProps<RunBatch.ResTaskList>[]>([
   { type: "expand", prop: "taskDescription", label: "任务说明", width: 85 },
   {
     prop: "taskFilePath",
-    label: "任务文件路径",
-    minWidth: 200
+    label: "任务文件路径"
   },
   {
     prop: "remark",
@@ -180,8 +179,7 @@ const columns_log = reactive<ColumnProps<RunBatch.ResLogList>[]>([
   },
   {
     prop: "endTime",
-    label: "结束时间",
-    minWidth: 200
+    label: "结束时间"
   }
 ]);
 

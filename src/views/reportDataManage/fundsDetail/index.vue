@@ -114,14 +114,12 @@ const columns = reactive<ColumnProps<Report.ResFunds>[]>([
     prop: "dataRollback",
     label: "数据打回",
     fixed: "left",
-    width: 110,
     isShow: type.value === "0"
   },
   {
     prop: "validationStatus",
     label: "校验状态",
     fixed: "left",
-    width: 110,
     search: {
       el: "tree-select",
       props: { filterable: true }
@@ -131,7 +129,6 @@ const columns = reactive<ColumnProps<Report.ResFunds>[]>([
     prop: "auditFailureReason",
     label: "审核不通过原因",
     fixed: "left",
-    width: 180,
     render: scope => {
       return (
         <>
@@ -145,7 +142,6 @@ const columns = reactive<ColumnProps<Report.ResFunds>[]>([
   {
     prop: "dealerCode",
     label: "经销商编号",
-    width: 110,
     search: {
       el: "input",
       props: { placeholder: "输入搜索关键词" }
@@ -154,7 +150,6 @@ const columns = reactive<ColumnProps<Report.ResFunds>[]>([
   {
     prop: "dealerName",
     label: "经销商名称",
-    width: 110,
     search: {
       el: "input",
       props: { placeholder: "输入搜索关键词" }
@@ -162,19 +157,15 @@ const columns = reactive<ColumnProps<Report.ResFunds>[]>([
   },
   {
     prop: "loanType",
-    label: "贷款类型",
-    width: 110
+    label: "贷款类型"
   },
   {
     prop: "vehicleIdentificationNumber",
-    label: "车辆识别号",
-    width: 110
+    label: "车辆识别号"
   },
   {
     prop: "creditContractCode",
     label: "信贷合同号",
-    width: 110,
-
     search: {
       el: "input",
       props: { placeholder: "输入搜索关键词" }
@@ -182,48 +173,39 @@ const columns = reactive<ColumnProps<Report.ResFunds>[]>([
   },
   {
     prop: "loanNoteCode",
-    label: "信贷借据号",
-    width: 110
+    label: "信贷借据号"
   },
   {
     prop: "detailSubjectCode",
-    label: "明细科目编号",
-    width: 150
+    label: "明细科目编号"
   },
   {
     prop: "detailSubjectName",
-    label: "明细科目名称",
-    width: 150
+    label: "明细科目名称"
   },
   {
     prop: "currency",
-    label: "币种",
-    width: 110
+    label: "币种"
   },
   {
     prop: "loanDate",
-    label: "放款日期",
-    width: 110
+    label: "放款日期"
   },
   {
     prop: "dueDate",
-    label: "到期日期",
-    width: 110
+    label: "到期日期"
   },
   {
     prop: "loanAmount",
-    label: "贷款金额",
-    width: 110
+    label: "贷款金额"
   },
   {
     prop: "loanInterestRate",
-    label: "贷款利率",
-    width: 110
+    label: "贷款利率"
   },
   {
     prop: "thirdPartyDiscountRate",
-    label: "第三方贴息利率",
-    width: 150
+    label: "第三方贴息利率"
   },
   {
     prop: "operation",

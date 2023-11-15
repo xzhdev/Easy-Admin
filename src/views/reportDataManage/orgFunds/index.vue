@@ -35,8 +35,7 @@ const columns = reactive<ColumnProps<Report.ResFunds>[]>([
   { type: "index", label: "序号", width: 80 },
   {
     prop: "moduleName",
-    label: "所属模块名称",
-    minWidth: 220
+    label: "所属模块名称"
   },
   {
     prop: "formName",
