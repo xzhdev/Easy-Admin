@@ -19,8 +19,10 @@ const getMaxLength = (arr: string[], context: CanvasRenderingContext2D) => {
  * @param str
  * @param context
  */
+// 获取计算后的样式值
+const fontFamily = window.getComputedStyle(document.body).getPropertyValue("font-family");
 const getTextWidth = (str: string, context: CanvasRenderingContext2D) => {
-  context.font = "16px Arial"; // 设置字体样式
+  context.font = `15px ${fontFamily}`; // 设置字体样式 15px是表头的字体大小
   const width = context.measureText(str).width;
   return width;
 };
@@ -48,8 +50,8 @@ const flexColumnWidth = (processTableData: any[], label: string, prop: string) =
 
   // 3.释放 Canvas 对象
   canvas.remove();
-
-  return maxLength > 200 ? 200 + 25 + "px" : maxLength + 25 + "px";
+  // 4. 计算最终宽度：200px 自定义宽度 + 12px + 12px 左右padding + 2px border，因为eltable取整数，并不会把maxLength的小数加上，所有我们加个1px，保证eltable 去小数后不会影响我们的宽度
+  return maxLength > 200 ? 200 + 24 + 2 + 1 + "px" : maxLength + 24 + 2 + 1 + "px";
 };
 
 export { flexColumnWidth };
