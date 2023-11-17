@@ -55,11 +55,11 @@ import { ColumnProps, ProTableInstance } from "@/components/ProTable/interface";
 import { Report } from "@/api/interface";
 import { addLoan, editLoan } from "@/api/modules/report";
 import { useI18n } from "vue-i18n";
-import { useVerifyProcess } from "@/hooks/useVerifyProcess";
 import { useTableSelectResTips } from "@/hooks/useTableSelectResTips";
 import ProTable from "@/components/ProTable/index.vue";
 import LoanDialog from "./components/LoanDialog.vue";
 import VerResultDialog from "./components/VerResultDialog.vue";
+import VerifyProcess from "@/components/VerifyProcess";
 
 const { t } = useI18n();
 const tabStore = useTabsStore();
@@ -266,10 +266,54 @@ const openVerResultDialog = async (row: Partial<Report.ResDetailFunds>) => {
 
 // 校验
 const handleVerProcess = async () => {
-  useTableSelectResTips(proTable.value?.selectedList, null, () => {
-    //传递勾选数据,未勾选则为全选
-    useVerifyProcess(proTable.value?.selectedList);
-  });
+  //模拟请求测试
+  function countCallsAndSum(callCount: number, targetSum: number) {
+    let currentSum = 0;
+    let calls = 0;
+
+    function calculateIncrement() {
+      const remainingCalls = callCount - calls;
+      const remainingSum = targetSum - currentSum;
+
+      // 计算每次调用应该累加的值
+      return remainingCalls > 0 ? Math.ceil(remainingSum / remainingCalls) : 0;
+    }
+
+    function callFunction() {
+      if (calls < callCount && currentSum < targetSum) {
+        const increment = calculateIncrement();
+        currentSum += increment;
+        calls += 1;
+        return currentSum;
+      } else {
+        return null; // 超过指定调用次数或累计最大值，返回null表示停止累加
+      }
+    }
+
+    return callFunction;
+  }
+  const countFunction = countCallsAndSum(18, 100);
+  const requestProcess = () => {
+    const result = countFunction();
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (result && result <= 30) {
+          console.log("成功请求-进度", result);
+          resolve(result);
+        } else if (result && result > 30 && result < 50) {
+          reject(result);
+          console.log("失败请求-进度", result);
+        } else {
+          console.log("成功请求-进度", result);
+          resolve(result);
+        }
+      }, 500);
+    });
+  };
+  // useTableSelectResTips(proTable.value?.selectedList, null, () => {
+  // });
+  //传递勾选数据,未勾选则为全选
+  VerifyProcess(requestProcess, proTable.value?.selectedList);
 };
 </script>
 

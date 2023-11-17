@@ -6,7 +6,7 @@ import { usePolling } from "@/hooks/usePolling";
  * @description 校验流程 数据校验数量确认 -> 展示校验进度 -> 展示校验结果
  * @param {Array} selectedList 校验的数据数组
  * */
-export const useVerifyProcess = async (api: () => Promise<any>, selectedList: any[] = []) => {
+export default async (api: () => Promise<any>, selectedList: any[] = []) => {
   ElMessageBox.confirm(
     selectedList.length > 0 ? `确认校验${selectedList.length}条数据吗？` : "确认校验全部数据吗？",
     "数据校验",
@@ -63,7 +63,7 @@ export const useVerifyProcess = async (api: () => Promise<any>, selectedList: an
             }
             ElMessage({
               type: "error",
-              message: `校验连接中断，剩余${5 - errorCount}次重连，等待重连中...`
+              message: `校验进度连接中断，剩余${5 - errorCount}次重连次数，尝试重连中...`
             });
             errorCount++;
             return;

@@ -24,7 +24,7 @@ import { onBeforeRouteLeave, useRouter, useRoute } from "vue-router";
 import { getFundsList } from "@/api/modules/report";
 import { ColumnProps } from "@/components/ProTable/interface";
 import { Report } from "@/api/interface";
-import { useVerifyProcess } from "@/hooks/useVerifyProcess";
+import VerifyProcess from "@/components/VerifyProcess";
 import ProTable from "@/components/ProTable/index.vue";
 
 const router = useRouter();
@@ -166,7 +166,7 @@ const handleVerProcess = async () => {
     });
   };
   //调用校验
-  useVerifyProcess(requestProcess);
+  VerifyProcess(requestProcess);
 };
 </script>
 
