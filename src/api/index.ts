@@ -9,6 +9,7 @@ import router from "@/routers";
 
 export interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
   loading?: boolean;
+  errorMessage?: boolean;
 }
 
 const config = {
@@ -33,6 +34,8 @@ class RequestHttp {
      */
     this.service.interceptors.request.use(
       (config: CustomAxiosRequestConfig) => {
+        console.log("requestconfig", config);
+
         const userStore = useUserStore();
         // 当前请求不需要显示 loading，在 api 服务中通过指定的第三个参数: { loading: false } 来控制
         config.loading ?? (config.loading = true);
@@ -53,7 +56,8 @@ class RequestHttp {
      */
     this.service.interceptors.response.use(
       (response: AxiosResponse) => {
-        const { data } = response;
+        console.log("requestconfig", response.config);
+        const { data, config } = response as { data: any; config: CustomAxiosRequestConfig };
         const userStore = useUserStore();
         tryHideFullScreenLoading();
         // 登陆失效
@@ -63,8 +67,10 @@ class RequestHttp {
           ElMessage.error(data.msg);
           return Promise.reject(data);
         }
+        // 当前请求不需要显示 errorMessage，在 api 服务中通过指定的第三个参数: { errorMessage: false } 来控制,可自定义错误信息，不使用后端返回的错误信息
+        config.errorMessage ?? (config.errorMessage = true);
         // 全局错误信息拦截（防止下载文件的时候返回数据流，没有 code 直接报错）
-        if (data.code && data.code !== ResultEnum.SUCCESS) {
+        if (data.code && data.code !== ResultEnum.SUCCESS && config.errorMessage) {
           ElMessage.error(data.msg);
           return Promise.reject(data);
         }
