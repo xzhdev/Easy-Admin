@@ -1,6 +1,9 @@
 /**
- * 遍历列的所有内容，获取最宽一列的宽度
- * @param arr
+ * 计算字符串数组中项的最大长度。
+ *
+ * @param {string[]} arr - 要计算最大长度的字符串数组。
+ * @param {CanvasRenderingContext2D} context - 用于测量文本宽度的渲染上下文。
+ * @return {number} 数组中项的最大长度。
  */
 const getMaxLength = (arr: string[], context: CanvasRenderingContext2D) => {
   return arr.reduce((acc, item) => {
@@ -15,11 +18,12 @@ const getMaxLength = (arr: string[], context: CanvasRenderingContext2D) => {
 };
 
 /**
- * 使用 Canvas 绘制文本并测量宽度
- * @param str
- * @param context
+ * 根据画布上下文中使用的字体样式和大小计算给定文本字符串的宽度。
+ *
+ * @param {string} str - 要计算宽度的文本字符串。
+ * @param {CanvasRenderingContext2D} context - 画布渲染上下文对象。
+ * @return {number} 文本字符串的宽度（以像素为单位）。
  */
-// 获取计算后的样式值
 const fontFamily = window.getComputedStyle(document.body).getPropertyValue("font-family");
 const getTextWidth = (str: string, context: CanvasRenderingContext2D) => {
   context.font = `15px ${fontFamily}`; // 设置字体样式 15px是表头的字体大小
@@ -28,10 +32,12 @@ const getTextWidth = (str: string, context: CanvasRenderingContext2D) => {
 };
 
 /**
- * el-table-column 自适应列宽
- * @param processTableData: 表格数据
- * @param label: 表名
- * @param prop: 字段
+ * 计算流程表格中弹性列的宽度。
+ *
+ * @param {any[]} processTableData - 表格的数据。
+ * @param {string} label - 列的标签。
+ * @param {string} prop - 列的属性。
+ * @return {string} 弹性列的计算宽度。
  */
 const flexColumnWidth = (processTableData: any[], label: string, prop: string) => {
   if (!processTableData || processTableData.length === 0) return;
