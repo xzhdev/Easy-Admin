@@ -1,11 +1,12 @@
 import { ElMessageBox, ElMessage, ElProgress } from "element-plus";
-import { h, nextTick, ref } from "vue";
+import { h, ref } from "vue";
+import { usePolling } from "@/hooks/usePolling";
 
 /**
  * @description 校验流程 数据校验数量确认 -> 展示校验进度 -> 展示校验结果
  * @param {Array} selectedList 校验的数据数组
  * */
-export const useVerifyProcess = async (selectedList: any[] = []) => {
+export const useVerifyProcess = async (api: () => Promise<any>, selectedList: any[] = []) => {
   ElMessageBox.confirm(
     selectedList.length > 0 ? `确认校验${selectedList.length}条数据吗？` : "确认校验全部数据吗？",
     "数据校验",
@@ -35,17 +36,48 @@ export const useVerifyProcess = async (selectedList: any[] = []) => {
               percentage: percentage.value
             })
         });
+        let processNum = 0; //后端返回进度
+        let failure = false; //是否请求失败
+        let errorCount = 0;
+        const { cancel } = usePolling(api, {
+          retryCount: 5,
+          onSuccess: data => {
+            console.log("onSuccess Data", data);
+            if (!data) return;
+            processNum = data;
+            errorCount = 0;
+            data === 100 && cancel();
+          },
+          onFailure: error => {
+            if (errorCount >= 5) {
+              failure = true;
+              Promise.reject("校验连接失败，请检查!");
+              ElMessageBox.close();
+              ElMessage({
+                type: "error",
+                duration: 0,
+                showClose: true,
+                message: `校验连接失败，请检查!`
+              });
+              return;
+            }
+            ElMessage({
+              type: "error",
+              message: `校验连接中断，剩余${5 - errorCount}次重连，等待重连中...`
+            });
+            errorCount++;
+            return;
+          }
+        });
         intervalTime = setInterval(() => {
+          if (percentage.value === processNum) {
+            if (failure) {
+              failure = false;
+              clearInterval(intervalTime as NodeJS.Timeout);
+            }
+            return;
+          }
           percentage.value++;
-          // if (percentage.value === 20) {
-          //   Promise.reject("校验意外退出");
-          //   ElMessageBox.close();
-          //   clearInterval(intervalTime as NodeJS.Timeout);
-          //   return ElMessage({
-          //     type: "error",
-          //     message: "校验意外退出"
-          //   });
-          // }
           if (percentage.value === 100) {
             clearInterval(intervalTime as NodeJS.Timeout);
             ElMessageBox.close();

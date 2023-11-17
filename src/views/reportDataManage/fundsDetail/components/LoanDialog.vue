@@ -47,7 +47,7 @@
     </el-collapse-transition>
     <template #footer>
       <span class="dialog-footer">
-        <el-button type="primary" @click="saveFrom"> 保存 </el-button>
+        <el-button v-debounce="saveFrom" type="primary"> 保存 </el-button>
       </span>
     </template>
   </el-dialog>
@@ -60,7 +60,6 @@ import { getFundsList } from "@/api/modules/report";
 import { ColumnProps } from "@/components/ProTable/interface";
 import ProTable from "@/components/ProTable/index.vue";
 import { DArrowRight } from "@element-plus/icons-vue";
-import { useDebounceFn } from "@vueuse/core";
 import type { FormInstance } from "element-plus";
 
 //控制会话框打开/关闭
@@ -417,7 +416,7 @@ const columns = reactive<ColumnProps<Report.ResFunds>[]>([
 
 // 保存表单
 const proFormRef = ref<FormInstance>();
-const saveFrom = useDebounceFn(async () => {
+const saveFrom = async () => {
   console.log("触发");
   if (!proFormRef.value) return;
   await proFormRef.value.validate(valid => {
@@ -431,7 +430,7 @@ const saveFrom = useDebounceFn(async () => {
       });
     }
   });
-}, 1000);
+};
 
 const collapsedChange = async () => {
   collapsed.value = !collapsed.value;

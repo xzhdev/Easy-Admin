@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="tsx" name="orgFunds">
-import { reactive } from "vue";
+import { reactive, ref } from "vue";
 import { useAuthStore } from "@/stores/modules/auth";
 import { usePageStore } from "@/stores/modules/page";
 import { onBeforeRouteLeave, useRouter, useRoute } from "vue-router";
@@ -121,7 +121,52 @@ const goFundsDetail = (id: string, state: string, title: string) => {
 
 // 校验
 const handleVerProcess = async () => {
-  useVerifyProcess();
+  //模拟请求测试
+  function countCallsAndSum(callCount: number, targetSum: number) {
+    let currentSum = 0;
+    let calls = 0;
+
+    function calculateIncrement() {
+      const remainingCalls = callCount - calls;
+      const remainingSum = targetSum - currentSum;
+
+      // 计算每次调用应该累加的值
+      return remainingCalls > 0 ? Math.ceil(remainingSum / remainingCalls) : 0;
+    }
+
+    function callFunction() {
+      if (calls < callCount && currentSum < targetSum) {
+        const increment = calculateIncrement();
+        currentSum += increment;
+        calls += 1;
+        return currentSum;
+      } else {
+        return null; // 超过指定调用次数或累计最大值，返回null表示停止累加
+      }
+    }
+
+    return callFunction;
+  }
+  const countFunction = countCallsAndSum(18, 100);
+  const requestProcess = () => {
+    const result = countFunction();
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (result && result <= 30) {
+          console.log("成功请求-进度", result);
+          resolve(result);
+        } else if (result && result > 30 && result < 50) {
+          reject(result);
+          console.log("失败请求-进度", result);
+        } else {
+          console.log("成功请求-进度", result);
+          resolve(result);
+        }
+      }, 500);
+    });
+  };
+  //调用校验
+  useVerifyProcess(requestProcess);
 };
 </script>
 

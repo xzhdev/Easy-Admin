@@ -17,7 +17,6 @@ const globalStore = useGlobalStore();
   display: flex;
   flex-shrink: 1;
   align-items: center;
-  justify-content: center;
   overflow: hidden;
   white-space: nowrap;
 }
