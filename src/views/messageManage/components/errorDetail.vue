@@ -10,6 +10,9 @@
       :table-loading="true"
       height="400px"
     >
+      <template #tableHeader>
+        <el-button type="primary">一键打回</el-button>
+      </template>
     </ProTable>
   </el-dialog>
 </template>

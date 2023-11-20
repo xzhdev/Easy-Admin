@@ -11,20 +11,22 @@
       :table-loading="true"
     >
       <template #tableHeader>
-        <el-button type="primary">下载报文</el-button>
+        <el-button type="primary" @click="downloadMessage">下载报文</el-button>
         <el-button>数据打回</el-button>
         <el-button>上传报文</el-button>
       </template>
     </ProTable>
+    <SelectDateDownload title="下载报文" :options="dateDownloadOptions" ref="selectDateDownload"></SelectDateDownload>
   </div>
 </template>
 
 <script setup lang="ts" name="messageDownload">
-import { reactive } from "vue";
-import ProTable from "@/components/ProTable/index.vue";
+import { reactive, ref } from "vue";
 import { ColumnProps } from "@/components/ProTable/interface";
 import { MessageManage } from "@/api/interface";
-import { getMessageDownloadList } from "@/api/modules/messageManage";
+import { getMessageDownloadList, getMessageDownload } from "@/api/modules/messageManage";
+import ProTable from "@/components/ProTable/index.vue";
+import SelectDateDownload from "@/components/SelectDateDownload/index.vue";
 
 //初始化请求数据
 const initParam = reactive({});
@@ -76,6 +78,27 @@ const columns = reactive<ColumnProps<MessageManage.ResMessageDownload>[]>([
     }
   }
 ]);
+// 选择日期下载配置项
+const dateDownloadOptions = reactive({
+  formItem: {
+    label: "数据日期",
+    prop: "date"
+  },
+  dateAttrs: {
+    type: "date",
+    valueFormat: "YYYY-MM-DD",
+    format: "YYYY-MM-DD",
+    placeholder: "请选择数据日期"
+  }
+});
+//下载报文
+const selectDateDownload = ref<InstanceType<typeof SelectDateDownload>>();
+const downloadMessage = () => {
+  const params = {
+    api: getMessageDownload
+  };
+  selectDateDownload.value?.acceptParams(params);
+};
 </script>
 
 <style scoped></style>

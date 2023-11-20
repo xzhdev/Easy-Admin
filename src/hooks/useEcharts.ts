@@ -14,7 +14,7 @@ export const useEcharts = (myChart: echarts.ECharts, options: echarts.EChartsCor
     myChart && myChart.resize();
   };
 
-  window.addEventListener("resize", echartsResize);
+  window.addEventListener("resize", echartsResize), { passive: false };
 
   // 防止 echarts 页面 keepAlive 时，还在继续监听页面
   onDeactivated(() => {
