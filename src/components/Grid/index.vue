@@ -35,11 +35,15 @@ const props = withDefaults(defineProps<Props>(), {
   gap: 0
 });
 
-onBeforeMount(() => props.collapsed && findIndex());
-onMounted(() => {
+onBeforeMount(() => {
+  props.collapsed && findIndex();
   resize({ target: { innerWidth: window.innerWidth } } as unknown as UIEvent);
   window.addEventListener("resize", resize);
 });
+// onMounted(() => {
+//   resize({ target: { innerWidth: window.innerWidth } } as unknown as UIEvent);
+//   window.addEventListener("resize", resize);
+// });
 onActivated(() => {
   resize({ target: { innerWidth: window.innerWidth } } as unknown as UIEvent);
   window.addEventListener("resize", resize);

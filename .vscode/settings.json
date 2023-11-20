@@ -93,5 +93,8 @@
     "zhongyingwen",
     "zhuti"
   ],
-  "search.useIgnoreFiles": true
+  "search.useIgnoreFiles": true,
+  "i18n-ally.localesPaths": [
+    "src/languages"
+  ]
 }

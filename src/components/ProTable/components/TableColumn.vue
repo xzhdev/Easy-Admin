@@ -6,7 +6,7 @@
 import { inject, ref, useSlots } from "vue";
 import { ColumnProps, RenderScope, HeaderRenderScope } from "@/components/ProTable/interface";
 import { filterEnum, formatValue, handleProp, handleRowAccordingToProp } from "@/utils";
-import { flexColumnWidth } from "@/utils/columnsWidth";
+import { getMaxWidth } from "@/utils/columnsWidth";
 const tableData = inject("tableData", ref([]));
 
 defineProps<{ column: ColumnProps }>();
@@ -25,6 +25,20 @@ const renderCellData = (item: ColumnProps, scope: RenderScope<any>) => {
 // 获取 tag 类型
 const getTagType = (item: ColumnProps, scope: RenderScope<any>) => {
   return filterEnum(handleRowAccordingToProp(scope.row, item.prop!), enumMap.value.get(item.prop), item.fieldNames, "tag");
+};
+
+// el-table-column 自适应列宽
+const flexColumnWidth = (processTableData: any[], label: string, prop: string) => {
+  if (!processTableData || processTableData.length === 0) return;
+  // 1.获取该列的所有数据
+  const arr = processTableData.map((x: { [x: string]: any }) => {
+    return x[prop];
+  });
+  arr.push(label); // 把每列的表头也加进去算
+  // 2.计算每列内容最大的宽度 + 表格的内间距（依据实际情况而定）
+  let maxLength = getMaxWidth(arr, { fontSize: 15, extraWidth: 27 });
+  // 3. 计算最终宽度：200px 自定义宽度 + 12px + 12px 左右padding + 2px border，因为eltable取整数，并不会把maxLength的小数加上，所有我们加个1px，保证eltable 去小数后不会影响我们的宽度
+  return maxLength > 227 ? 227 + "px" : maxLength + "px";
 };
 
 const RenderTableColumn = (item: ColumnProps) => {

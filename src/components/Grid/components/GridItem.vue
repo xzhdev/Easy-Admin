@@ -1,6 +1,6 @@
 <template>
   <div v-show="isShow" :style="style">
-    <slot></slot>
+    <slot :cols="cols"></slot>
   </div>
 </template>
 <script setup lang="ts" name="GridItem">
@@ -46,7 +46,7 @@ watch(
 );
 
 const gap = inject("gap", 0);
-const cols = inject("cols", ref(4));
+const cols = inject("cols", ref(0));
 const style = computed(() => {
   let span = props[breakPoint.value]?.span ?? props.span;
   let offset = props[breakPoint.value]?.offset ?? props.offset;
