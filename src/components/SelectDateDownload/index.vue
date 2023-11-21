@@ -1,5 +1,12 @@
 <template>
-  <el-dialog :title="title" class="dialog-center" v-model="dialogVisible" :destroy-on-close="true" width="400px">
+  <el-dialog
+    :title="title"
+    class="dialog-center"
+    v-model="dialogVisible"
+    :destroy-on-close="true"
+    @close="closeDialog"
+    width="400px"
+  >
     <el-form class="flx-center" :model="model" ref="form" :rules="rules">
       <el-form-item :label="options.formItem.label" :prop="options.formItem.prop">
         <component :is="'el-date-picker'" v-bind="options.dateAttrs" v-model="model[options.formItem.prop]" />
@@ -64,6 +71,11 @@ const sumbit = () => {
     } else {
     }
   });
+};
+
+//关闭对话框
+const closeDialog = () => {
+  form.value?.resetFields();
 };
 
 defineExpose({

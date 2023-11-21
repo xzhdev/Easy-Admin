@@ -119,7 +119,7 @@ let widthList: number[] = [];
 // 计算次数，测试用
 // let testCount = ref(0);
 const flexColumnWidth = (index: number, fieldName: string, cols: number) => {
-  if (cols === 0) return;
+  if (cols === 0 || !showCollapse.value) return;
   //当列数发生改变时，才重新分列
   if (splitCols !== cols) {
     //清空存储的列宽
